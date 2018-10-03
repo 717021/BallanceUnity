@@ -1,0 +1,15 @@
+/Packages
+/Debug/Ballance2
+/.vs
+/Library
+/obj
+/Temp
+*.svd
+*.userprefs
+/*.csproj
+*.pidb
+*.suo
+/*.sln
+*.user
+*.unityproj
+*.booproj

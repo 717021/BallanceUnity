@@ -1,0 +1,8 @@
+Assets/Scripts/LUA/ToLua/Core/
+Assets/Scripts/LUA/ToLua/Injection/
+Assets/Scripts/LUA/ToLua/Misc/
+Assets/Scripts/LUA/ToLua/Injection/
+Assets/Scripts/LUA/ToLua/Misc/
+H:/OpenSource/toluaSelf/Assets/Plugins/
+H:/OpenSource/toluaSelf/Assets/ToLua/BaseType/
+Assets/Scripts/Source/Generate/
