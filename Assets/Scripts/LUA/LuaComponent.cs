@@ -69,7 +69,12 @@ public class LuaComponent : MonoBehaviour
         if (luaFile == null || string.IsNullOrEmpty(luaFile.text))
             return;
 
-        if (LuaState == null) LuaState = new LuaState();
+        if (LuaState == null)
+        {
+            LuaState = new LuaState();
+            LuaBinder.Bind(LuaState);
+            LuaState.Start();
+        }
 
         object[] luaRet = LuaState.DoString<object[]>(luaFile.text, luaFile.name);
         if (luaRet != null && luaRet.Length >= 1)

@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GlobalUI
+namespace GlobalUI.LayoutUI
 {
+    /// <summary>
+    /// 未实现，保留
+    /// </summary>
     public class UIAutoLayoutMenu : UIMenu
     {
         public virtual float DoLayout()

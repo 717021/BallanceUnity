@@ -15,9 +15,10 @@ namespace Helper
      *     [注释]
      *     :注释
      * 
-     * 
+     * 2018.5.1   df created coptright c 2018
+     * 2018.7.1   df
+     * 2018.10.3 df 
      */
-
 
     /// <summary>
     /// Ballance专用描述文件解析类
@@ -25,14 +26,14 @@ namespace Helper
     public class BFSReader : IDisposable
     {
         /// <summary>
-        /// 默认。
+        /// 初始化 <see cref="BFSReader"/> 的新实例
         /// </summary>
         public BFSReader()
         {
 
         }
         /// <summary>
-        /// 解析 文本。
+        /// 使用初需要解析的文字来始化 <see cref="BFSReader"/> 的新实例
         /// </summary>
         /// <param name="str">需要解析的文字</param>
         public BFSReader(string str)
@@ -41,7 +42,7 @@ namespace Helper
                 AnalysisString(str);
         }
         /// <summary>
-        /// 解析 文本资源。
+        /// 使用初需要解析的文本资源 <see cref="TextAsset"/> 来始化 <see cref="BFSReader"/> 的新实例
         /// </summary>
         /// <param name="txt">需要解析的 TextAsset 。</param>
         public BFSReader(TextAsset txt)
@@ -51,7 +52,7 @@ namespace Helper
                     AnalysisString(txt.text);
         }
         /// <summary>
-        /// 释放。
+        /// 释放（IDisposable）
         /// </summary>
         public void Dispose()
         {
@@ -63,10 +64,16 @@ namespace Helper
         /// 获取存放属性的字典。
         /// </summary>
         public Dictionary<string, string> Props { get { return dictionaryProps; } }
+        /// <summary>
+        /// 获取存放组的字典。
+        /// </summary>
+        public Dictionary<string, List<String>> Blocks { get { return dictionaryBlocks; } }
 
+        private Dictionary<string, List<String>> dictionaryBlocks = new Dictionary<string, List<String>>();
         private Dictionary<string, string> dictionaryProps = new Dictionary<string, string>();
         private List<string> lines = new List<string>();
-        private bool isReadLine = false;
+        private bool isReadBlock = false;
+        private List<String> readBlock = null;
 
         protected void AnalysisString(string str)
         {
@@ -80,10 +87,10 @@ namespace Helper
                     if (!r[i].StartsWith(":"))
                         if (!r[i].StartsWith("["))
                         {
-                            if (isReadLine)
-                            {
+                            if (isReadBlock)
                                 lines.Add(r[i]);
-                            }
+                            else if (readBlock != null)
+                                readBlock.Add(r[i]);
                             else
                             {
                                 //解析 props
@@ -116,9 +123,16 @@ namespace Helper
                         {
                             string astr = r[i].Substring(1, r[i].Length - 2);
                             if (astr == "LINEREAD")
-                                isReadLine = true;
+                                isReadBlock = true;
                             else if (astr == "ENDLINEREAD")
-                                isReadLine = false;
+                                isReadBlock = false;
+                            else if (astr.StartsWith("START:"))
+                            {
+                                readBlock = new List<string>();
+                                dictionaryBlocks.Add(astr.Remove(0, 6), readBlock);
+                            }
+                            else if (astr.StartsWith("END:"))
+                                readBlock = null;
                         }
                 }
 
@@ -145,6 +159,7 @@ namespace Helper
                 return dictionaryProps[propname];
             return null;
         }
+
         /// <summary>
         /// 获取属性值的分割属性。（;分隔的）
         /// </summary>
@@ -167,9 +182,21 @@ namespace Helper
                 return new string[] { propValue };
             return propValue.Split(':');
         }
+
         public string[] GetLineAllItems()
         {
             return lines.ToArray();
+        }
+        /// <summary>
+        /// 获取行组所有项目
+        /// </summary>
+        /// <param name="blockName">行组名称</param>
+        /// <returns>所有项目</returns>
+        public string[] GetBlockAllItems(string blockName)
+        {
+            if (dictionaryBlocks.ContainsKey(blockName))
+                return dictionaryBlocks[blockName].ToArray();
+            return null;
         }
     }
 

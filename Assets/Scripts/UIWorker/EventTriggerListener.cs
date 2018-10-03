@@ -4,9 +4,13 @@ using UnityEngine.EventSystems;
 
 namespace Helper
 {
+    /// <summary>
+    /// UI 事件侦听器
+    /// </summary>
     public class EventTriggerListener : EventTrigger
     {
         public delegate void VoidDelegate(GameObject go);
+
         public VoidDelegate onClick;
         public VoidDelegate onDown;
         public VoidDelegate onEnter;
@@ -15,12 +19,18 @@ namespace Helper
         public VoidDelegate onSelect;
         public VoidDelegate onUpdateSelect;
 
+        /// <summary>
+        /// 从 指定 GameObject 创建事件侦听器
+        /// </summary>
+        /// <param name="go">指定 GameObject</param>
+        /// <returns></returns>
         static public EventTriggerListener Get(GameObject go)
         {
             EventTriggerListener listener = go.GetComponent<EventTriggerListener>();
             if (listener == null) listener = go.AddComponent<EventTriggerListener>();
             return listener;
         }
+
         public override void OnPointerClick(PointerEventData eventData)
         {
             if (onClick != null) onClick(gameObject);

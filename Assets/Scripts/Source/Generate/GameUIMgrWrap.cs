@@ -10,6 +10,10 @@ public class GameUIMgrWrap
 		L.RegFunction("ExitGameClear", ExitGameClear);
 		L.RegFunction("FadeOut", FadeOut);
 		L.RegFunction("FadeIn", FadeIn);
+		L.RegFunction("GetStandardUIMaker", GetStandardUIMaker);
+		L.RegFunction("ShowDialog", ShowDialog);
+		L.RegFunction("ShowDialogThreeChoice", ShowDialogThreeChoice);
+		L.RegFunction("IsDialogClosed", IsDialogClosed);
 		L.RegFunction("GoMenuPage", GoMenuPage);
 		L.RegFunction("HideMenuPage", HideMenuPage);
 		L.RegFunction("BackForntMenuPage", BackForntMenuPage);
@@ -83,6 +87,83 @@ public class GameUIMgrWrap
 			GameUIMgr obj = (GameUIMgr)ToLua.CheckObject<GameUIMgr>(L, 1);
 			obj.FadeIn();
 			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetStandardUIMaker(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			GameUIMgr obj = (GameUIMgr)ToLua.CheckObject<GameUIMgr>(L, 1);
+			GameUIMgr.StandardUIMaker o = obj.GetStandardUIMaker();
+			ToLua.PushObject(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int ShowDialog(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 6);
+			GameUIMgr obj = (GameUIMgr)ToLua.CheckObject<GameUIMgr>(L, 1);
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			string arg1 = ToLua.CheckString(L, 3);
+			string arg2 = ToLua.CheckString(L, 4);
+			string arg3 = ToLua.CheckString(L, 5);
+			string arg4 = ToLua.CheckString(L, 6);
+			obj.ShowDialog(arg0, arg1, arg2, arg3, arg4);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int ShowDialogThreeChoice(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 7);
+			GameUIMgr obj = (GameUIMgr)ToLua.CheckObject<GameUIMgr>(L, 1);
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			string arg1 = ToLua.CheckString(L, 3);
+			string arg2 = ToLua.CheckString(L, 4);
+			string arg3 = ToLua.CheckString(L, 5);
+			string arg4 = ToLua.CheckString(L, 6);
+			string arg5 = ToLua.CheckString(L, 7);
+			obj.ShowDialogThreeChoice(arg0, arg1, arg2, arg3, arg4, arg5);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int IsDialogClosed(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			GameUIMgr obj = (GameUIMgr)ToLua.CheckObject<GameUIMgr>(L, 1);
+			bool o = obj.IsDialogClosed();
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{

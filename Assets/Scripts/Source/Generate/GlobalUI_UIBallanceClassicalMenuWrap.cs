@@ -7,7 +7,7 @@ public class GlobalUI_UIBallanceClassicalMenuWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(GlobalUI.UIBallanceClassicalMenu), typeof(GlobalUI.LayoutUI.UIVerticalLayoutMenu));
-		L.RegFunction("Oninit", Oninit);
+		L.RegFunction("OnInit", OnInit);
 		L.RegFunction("DoLayout", DoLayout);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
@@ -15,13 +15,13 @@ public class GlobalUI_UIBallanceClassicalMenuWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Oninit(IntPtr L)
+	static int OnInit(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 1);
 			GlobalUI.UIBallanceClassicalMenu obj = (GlobalUI.UIBallanceClassicalMenu)ToLua.CheckObject<GlobalUI.UIBallanceClassicalMenu>(L, 1);
-			obj.Oninit();
+			obj.OnInit();
 			return 0;
 		}
 		catch (Exception e)

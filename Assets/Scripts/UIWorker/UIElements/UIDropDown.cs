@@ -2,13 +2,16 @@
 
 namespace GlobalUI.UIElements
 {
+    /// <summary>
+    /// UI 下拉框
+    /// </summary>
     public class UIDropDown : UIElement
     {
-        public override void Oninit()
+        public override void OnInit()
         {
             text = transform.GetChild(0).gameObject.GetComponent<Text>();
             dropdown = transform.GetChild(1).gameObject.GetComponent<Dropdown>();
-            base.Oninit();
+            base.OnInit();
         }
 
         public override void StartSet(string initstr)

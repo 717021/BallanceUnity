@@ -7,12 +7,12 @@ public class UnityEngine_ShaderWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(UnityEngine.Shader), typeof(UnityEngine.Object));
-		L.RegFunction("PropertyToID", PropertyToID);
 		L.RegFunction("Find", Find);
 		L.RegFunction("EnableKeyword", EnableKeyword);
 		L.RegFunction("DisableKeyword", DisableKeyword);
 		L.RegFunction("IsKeywordEnabled", IsKeywordEnabled);
 		L.RegFunction("WarmupAllShaders", WarmupAllShaders);
+		L.RegFunction("PropertyToID", PropertyToID);
 		L.RegFunction("SetGlobalFloat", SetGlobalFloat);
 		L.RegFunction("SetGlobalInt", SetGlobalInt);
 		L.RegFunction("SetGlobalVector", SetGlobalVector);
@@ -40,23 +40,6 @@ public class UnityEngine_ShaderWrap
 		L.RegVar("globalRenderPipeline", get_globalRenderPipeline, set_globalRenderPipeline);
 		L.RegVar("renderQueue", get_renderQueue, null);
 		L.EndClass();
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int PropertyToID(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 1);
-			string arg0 = ToLua.CheckString(L, 1);
-			int o = UnityEngine.Shader.PropertyToID(arg0);
-			LuaDLL.lua_pushinteger(L, o);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -133,6 +116,23 @@ public class UnityEngine_ShaderWrap
 			ToLua.CheckArgsCount(L, 0);
 			UnityEngine.Shader.WarmupAllShaders();
 			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int PropertyToID(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			string arg0 = ToLua.CheckString(L, 1);
+			int o = UnityEngine.Shader.PropertyToID(arg0);
+			LuaDLL.lua_pushinteger(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{

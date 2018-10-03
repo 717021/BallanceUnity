@@ -37,8 +37,14 @@ public class UnityEngine_QualitySettingsWrap
 		L.RegVar("billboardsFaceCameraPosition", get_billboardsFaceCameraPosition, set_billboardsFaceCameraPosition);
 		L.RegVar("resolutionScalingFixedDPIFactor", get_resolutionScalingFixedDPIFactor, set_resolutionScalingFixedDPIFactor);
 		L.RegVar("blendWeights", get_blendWeights, set_blendWeights);
-		L.RegVar("names", get_names, null);
+		L.RegVar("streamingMipmapsActive", get_streamingMipmapsActive, set_streamingMipmapsActive);
+		L.RegVar("streamingMipmapsMemoryBudget", get_streamingMipmapsMemoryBudget, set_streamingMipmapsMemoryBudget);
+		L.RegVar("streamingMipmapsRenderersPerFrame", get_streamingMipmapsRenderersPerFrame, null);
+		L.RegVar("streamingMipmapsMaxLevelReduction", get_streamingMipmapsMaxLevelReduction, set_streamingMipmapsMaxLevelReduction);
+		L.RegVar("streamingMipmapsAddAllCameras", get_streamingMipmapsAddAllCameras, set_streamingMipmapsAddAllCameras);
+		L.RegVar("streamingMipmapsMaxFileIORequests", get_streamingMipmapsMaxFileIORequests, set_streamingMipmapsMaxFileIORequests);
 		L.RegVar("maxQueuedFrames", get_maxQueuedFrames, set_maxQueuedFrames);
+		L.RegVar("names", get_names, null);
 		L.RegVar("desiredColorSpace", get_desiredColorSpace, null);
 		L.RegVar("activeColorSpace", get_activeColorSpace, null);
 		L.EndStaticLibs();
@@ -518,11 +524,81 @@ public class UnityEngine_QualitySettingsWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_names(IntPtr L)
+	static int get_streamingMipmapsActive(IntPtr L)
 	{
 		try
 		{
-			ToLua.Push(L, UnityEngine.QualitySettings.names);
+			LuaDLL.lua_pushboolean(L, UnityEngine.QualitySettings.streamingMipmapsActive);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_streamingMipmapsMemoryBudget(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushnumber(L, UnityEngine.QualitySettings.streamingMipmapsMemoryBudget);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_streamingMipmapsRenderersPerFrame(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushinteger(L, UnityEngine.QualitySettings.streamingMipmapsRenderersPerFrame);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_streamingMipmapsMaxLevelReduction(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushinteger(L, UnityEngine.QualitySettings.streamingMipmapsMaxLevelReduction);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_streamingMipmapsAddAllCameras(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushboolean(L, UnityEngine.QualitySettings.streamingMipmapsAddAllCameras);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_streamingMipmapsMaxFileIORequests(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushinteger(L, UnityEngine.QualitySettings.streamingMipmapsMaxFileIORequests);
 			return 1;
 		}
 		catch (Exception e)
@@ -537,6 +613,20 @@ public class UnityEngine_QualitySettingsWrap
 		try
 		{
 			LuaDLL.lua_pushinteger(L, UnityEngine.QualitySettings.maxQueuedFrames);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_names(IntPtr L)
+	{
+		try
+		{
+			ToLua.Push(L, UnityEngine.QualitySettings.names);
 			return 1;
 		}
 		catch (Exception e)
@@ -940,6 +1030,81 @@ public class UnityEngine_QualitySettingsWrap
 		{
 			UnityEngine.BlendWeights arg0 = (UnityEngine.BlendWeights)ToLua.CheckObject(L, 2, typeof(UnityEngine.BlendWeights));
 			UnityEngine.QualitySettings.blendWeights = arg0;
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_streamingMipmapsActive(IntPtr L)
+	{
+		try
+		{
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			UnityEngine.QualitySettings.streamingMipmapsActive = arg0;
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_streamingMipmapsMemoryBudget(IntPtr L)
+	{
+		try
+		{
+			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+			UnityEngine.QualitySettings.streamingMipmapsMemoryBudget = arg0;
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_streamingMipmapsMaxLevelReduction(IntPtr L)
+	{
+		try
+		{
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			UnityEngine.QualitySettings.streamingMipmapsMaxLevelReduction = arg0;
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_streamingMipmapsAddAllCameras(IntPtr L)
+	{
+		try
+		{
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			UnityEngine.QualitySettings.streamingMipmapsAddAllCameras = arg0;
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_streamingMipmapsMaxFileIORequests(IntPtr L)
+	{
+		try
+		{
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			UnityEngine.QualitySettings.streamingMipmapsMaxFileIORequests = arg0;
 			return 0;
 		}
 		catch (Exception e)

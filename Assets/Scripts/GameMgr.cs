@@ -3,9 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * 游戏主管理器类
+ * 
+ * 
+ * 2018.10.1
+ */
+
+/// <summary>
+/// 游戏主管理器
+/// </summary>
 public class GameMgr : MonoBehaviour, IGameBasePart
 {
     private GameBulider _GameBulider = null;
+
     public GameBulider GameBulider
     {
         get
@@ -18,7 +29,12 @@ public class GameMgr : MonoBehaviour, IGameBasePart
                 _GameBulider = value;
         }
     }
+
     private static GameMgr _GameMgrInstance = null;
+
+    /// <summary>
+    /// 游戏主管理器类实例
+    /// </summary>
     public static GameMgr GameMgrInstance
     {
         get
@@ -31,8 +47,6 @@ public class GameMgr : MonoBehaviour, IGameBasePart
                 _GameMgrInstance = value;
         }
     }
-
-
 
     //==============================
 
@@ -59,8 +73,10 @@ public class GameMgr : MonoBehaviour, IGameBasePart
         else GameCommandManager.SetCurrentCommandResult("游戏正在退出。");
         return false;
     }
+
     //==LOGS============================
 
+    #region LOGS
 
     /// <summary>
     /// 输出信息到控制台
@@ -68,7 +84,7 @@ public class GameMgr : MonoBehaviour, IGameBasePart
     /// <param name="s">信息</param>
     public static void Log(string s)
     {
-        GameBulider.GameBuliderStatic.CommandManager.Log(s);
+        GameBulider.GameBuliderInstance.CommandManager.Log(s);
     }
     /// <summary>
     /// 输出错误信息到控制台
@@ -76,7 +92,7 @@ public class GameMgr : MonoBehaviour, IGameBasePart
     /// <param name="s">信息</param>
     public static void LogErr(string s)
     {
-        GameBulider.GameBuliderStatic.CommandManager.LogErr(s);
+        GameBulider.GameBuliderInstance.CommandManager.LogErr(s);
     }
     /// <summary>
     /// 输出警告信息到控制台
@@ -84,7 +100,7 @@ public class GameMgr : MonoBehaviour, IGameBasePart
     /// <param name="s">信息</param>
     public static void LogWarn(string s)
     {
-        GameBulider.GameBuliderStatic.CommandManager.LogWarn(s);
+        GameBulider.GameBuliderInstance.CommandManager.LogWarn(s);
     }
     /// <summary>
     /// 输出信息到控制台
@@ -92,7 +108,7 @@ public class GameMgr : MonoBehaviour, IGameBasePart
     /// <param name="s">信息</param>
     public static void LogInfo(string s)
     {
-        GameBulider.GameBuliderStatic.CommandManager.LogInfo(s);
+        GameBulider.GameBuliderInstance.CommandManager.LogInfo(s);
     }
     /// <summary>
     /// 输出信息到控制台
@@ -101,7 +117,7 @@ public class GameMgr : MonoBehaviour, IGameBasePart
     /// <param name="agr1">字符串格式化参数1</param>
     public static void Log(string s, object agr1)
     {
-        GameBulider.GameBuliderStatic.CommandManager.Log(string.Format(s, agr1));
+        GameBulider.GameBuliderInstance.CommandManager.Log(string.Format(s, agr1));
     }
     /// <summary>
     /// 输出错误信息到控制台
@@ -110,7 +126,7 @@ public class GameMgr : MonoBehaviour, IGameBasePart
     /// <param name="agr1">字符串格式化参数1</param>
     public static void LogErr(string s, object agr1)
     {
-        GameBulider.GameBuliderStatic.CommandManager.LogErr(string.Format(s, agr1));
+        GameBulider.GameBuliderInstance.CommandManager.LogErr(string.Format(s, agr1));
     }
     /// <summary>
     /// 输出警告信息到控制台
@@ -119,7 +135,7 @@ public class GameMgr : MonoBehaviour, IGameBasePart
     /// <param name="agr1">字符串格式化参数1</param>
     public static void LogWarn(string s, object agr1)
     {
-        GameBulider.GameBuliderStatic.CommandManager.LogWarn(string.Format(s, agr1));
+        GameBulider.GameBuliderInstance.CommandManager.LogWarn(string.Format(s, agr1));
     }
     /// <summary>
     /// 输出信息到控制台
@@ -128,7 +144,7 @@ public class GameMgr : MonoBehaviour, IGameBasePart
     /// <param name="agr1">字符串格式化参数1</param>
     public static void LogInfo(string s, object agr1)
     {
-        GameBulider.GameBuliderStatic.CommandManager.LogInfo(string.Format(s, agr1));
+        GameBulider.GameBuliderInstance.CommandManager.LogInfo(string.Format(s, agr1));
     }
     /// <summary>
     /// 输出信息到控制台
@@ -138,7 +154,7 @@ public class GameMgr : MonoBehaviour, IGameBasePart
     /// <param name="agr2">字符串格式化参数2</param>
     public static void Log(string s, object agr1, object agr2)
     {
-        GameBulider.GameBuliderStatic.CommandManager.Log(string.Format(s, agr1, agr2));
+        GameBulider.GameBuliderInstance.CommandManager.Log(string.Format(s, agr1, agr2));
     }
     /// <summary>
     /// 输出错误信息到控制台
@@ -148,7 +164,7 @@ public class GameMgr : MonoBehaviour, IGameBasePart
     /// <param name="agr2">字符串格式化参数2</param>
     public static void LogErr(string s, object agr1, object agr2)
     {
-        GameBulider.GameBuliderStatic.CommandManager.LogErr(string.Format(s, agr1, agr2));
+        GameBulider.GameBuliderInstance.CommandManager.LogErr(string.Format(s, agr1, agr2));
     }
     /// <summary>
     /// 输出警告信息到控制台
@@ -158,7 +174,7 @@ public class GameMgr : MonoBehaviour, IGameBasePart
     /// <param name="agr2">字符串格式化参数2</param>
     public static void LogWarn(string s, object agr1, object agr2)
     {
-        GameBulider.GameBuliderStatic.CommandManager.LogWarn(string.Format(s, agr1, agr2));
+        GameBulider.GameBuliderInstance.CommandManager.LogWarn(string.Format(s, agr1, agr2));
     }
     /// <summary>
     /// 输出信息到控制台
@@ -168,7 +184,7 @@ public class GameMgr : MonoBehaviour, IGameBasePart
     /// <param name="agr2">字符串格式化参数2</param>
     public static void LogInfo(string s, object agr1, object agr2)
     {
-        GameBulider.GameBuliderStatic.CommandManager.LogInfo(string.Format(s, agr1, agr2));
+        GameBulider.GameBuliderInstance.CommandManager.LogInfo(string.Format(s, agr1, agr2));
     }
     /// <summary>
     /// 输出信息到控制台
@@ -177,7 +193,7 @@ public class GameMgr : MonoBehaviour, IGameBasePart
     /// <param name="args">字符串格式化参数</param>
     public static void Log(string s, params object[] args)
     {
-        GameBulider.GameBuliderStatic.CommandManager.Log(string.Format(s, args));
+        GameBulider.GameBuliderInstance.CommandManager.Log(string.Format(s, args));
     }
     /// <summary>
     /// 输出错误信息到控制台
@@ -186,7 +202,7 @@ public class GameMgr : MonoBehaviour, IGameBasePart
     /// <param name="args">字符串格式化参数</param>
     public static void LogErr(string s, params object[] args)
     {
-        GameBulider.GameBuliderStatic.CommandManager.LogErr(string.Format(s, args));
+        GameBulider.GameBuliderInstance.CommandManager.LogErr(string.Format(s, args));
     }
     /// <summary>
     /// 输出警告信息到控制台
@@ -195,7 +211,7 @@ public class GameMgr : MonoBehaviour, IGameBasePart
     /// <param name="args">字符串格式化参数</param>
     public static void LogWarn(string s, params object[] args)
     {
-        GameBulider.GameBuliderStatic.CommandManager.LogWarn(string.Format(s, args));
+        GameBulider.GameBuliderInstance.CommandManager.LogWarn(string.Format(s, args));
     }
     /// <summary>
     /// 输出信息到控制台
@@ -204,14 +220,15 @@ public class GameMgr : MonoBehaviour, IGameBasePart
     /// <param name="args">字符串格式化参数</param>
     public static void LogInfo(string s, params object[] args)
     {
-        GameBulider.GameBuliderStatic.CommandManager.LogInfo(string.Format(s, args));
+        GameBulider.GameBuliderInstance.CommandManager.LogInfo(string.Format(s, args));
     }
 
+    #endregion
 
     //==SOME=PARARMS===========================
 
     /// <summary>
-    /// 是否正在退出
+    /// 获取游戏是否正在退出
     /// </summary>
     public bool GameExiting
     {
@@ -219,6 +236,9 @@ public class GameMgr : MonoBehaviour, IGameBasePart
     }
 
     //==FUNCTIONS============================
+
+    //旧版事件与动作中控
+    //其不支持lua，仅供游戏主体使用或C# dll mod 使用（il2cpp不支持）。
 
     #region Action
 
@@ -385,7 +405,7 @@ public class GameMgr : MonoBehaviour, IGameBasePart
     #endregion
 
     /// <summary>
-    /// 退出游戏
+    /// 全局退出游戏函数，调用此函数退出游戏
     /// </summary>
     public void ExitGame()
     {
@@ -395,10 +415,14 @@ public class GameMgr : MonoBehaviour, IGameBasePart
             GameBulider.ExitGame();
         }
     }
-
+    /// <summary>
+    /// 退出清理【不可调用】
+    /// </summary>
     public void ExitGameClear()
     {
-        
+
+        events.Clear();
+        events = null;
     }
 
 

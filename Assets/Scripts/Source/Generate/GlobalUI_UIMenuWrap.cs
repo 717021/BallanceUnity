@@ -12,7 +12,7 @@ public class GlobalUI_UIMenuWrap
 		L.RegFunction("AddEle", AddEle);
 		L.RegFunction("RemoveEle", RemoveEle);
 		L.RegFunction("UpdateMenu", UpdateMenu);
-		L.RegFunction("Oninit", Oninit);
+		L.RegFunction("OnInit", OnInit);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.EndClass();
@@ -136,13 +136,13 @@ public class GlobalUI_UIMenuWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Oninit(IntPtr L)
+	static int OnInit(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 1);
 			GlobalUI.UIMenu obj = (GlobalUI.UIMenu)ToLua.CheckObject<GlobalUI.UIMenu>(L, 1);
-			obj.Oninit();
+			obj.OnInit();
 			return 0;
 		}
 		catch (Exception e)

@@ -8,7 +8,7 @@ public class GlobalUI_UIElements_UIButtonWrap
 	{
 		L.BeginClass(typeof(GlobalUI.UIElements.UIButton), typeof(GlobalUI.UIElement));
 		L.RegFunction("OnClick", OnClick);
-		L.RegFunction("Oninit", Oninit);
+		L.RegFunction("OnInit", OnInit);
 		L.RegFunction("StartSet", StartSet);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
@@ -35,13 +35,13 @@ public class GlobalUI_UIElements_UIButtonWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Oninit(IntPtr L)
+	static int OnInit(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 1);
 			GlobalUI.UIElements.UIButton obj = (GlobalUI.UIElements.UIButton)ToLua.CheckObject<GlobalUI.UIElements.UIButton>(L, 1);
-			obj.Oninit();
+			obj.OnInit();
 			return 0;
 		}
 		catch (Exception e)

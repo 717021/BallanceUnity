@@ -5,9 +5,16 @@ using System.Collections;
 using System.IO;
 using Helper;
 
-//
+/*
+ * mod包类
+ * 
+ * 即 MOD 管理的基础
+ * 
+ * 2018.10.3
+ */
+
 /// <summary>
-/// mod包
+/// MOD 包
 /// </summary>
 public class GameModPackage : IDisposable
 {
@@ -21,26 +28,49 @@ public class GameModPackage : IDisposable
         public string InitObjCodePath = "";
         public bool InitObj = false;
         public bool InitObjAttatchCode = false;
+        public bool InitObjLUACodeUseGlobalLuaState = false;
     }
+
+    /// <summary>
+    /// 指定 MOD 包如何寻找资源
+    /// </summary>
     public enum GameModPackageAssetFindType
     {
         /// <summary>
-        /// 在zip中查找
+        /// 指定在 zip 中查找资源（需开启Zip支持）
         /// </summary>
         UseZip,
         /// <summary>
-        /// 在AssetBundle中查找
+        /// 指定在 AssetBundle 中查找资源
         /// </summary>
         UseAssetBundle,
     }
+    /// <summary>
+    /// 指定 MOD 包的代码格式
+    /// </summary>
     public enum GameModCodeType
     {
+        /// <summary>
+        /// 未知，不支持
+        /// </summary>
         Unknow,
+        /// <summary>
+        /// 使用LUA作为MOD脚本代码（推荐）
+        /// </summary>
         LUA,
+        /// <summary>
+        /// 不支持（Reserved）
+        /// </summary>
         CSharp,
+        /// <summary>
+        /// 使用 C# Dll mod 作为MOD脚本代码（很快就不支持（il2cpp编译时和ios将不支持此mod代码））
+        /// </summary>
         CSharpNative,
     }
 
+    /// <summary>
+    /// 释放，请勿调用（IDisposable自动调用）
+    /// </summary>
     public void Dispose()
     {
         if (ZipFile != null)
@@ -48,9 +78,9 @@ public class GameModPackage : IDisposable
             ZipFile.Dispose();
             ZipFile = null;
         }
-        if (InitnaizeDsbFile != null)
+        if (InitnaizeDefFile != null)
         {
-            InitnaizeDsbFile.Dispose();
+            InitnaizeDefFile.Dispose();
             initBFSReader = null;
         }
         if (LuaState != null)
@@ -65,6 +95,11 @@ public class GameModPackage : IDisposable
         loadedAssetBundles = null;
     }
 
+    /// <summary>
+    /// 初始化此 MOD 包为一个 Zip MOD 包，并开启Zip支持
+    /// </summary>
+    /// <param name="zipFileReader">指定 Zip 文件</param>
+    /// <param name="assetPath">指定默认资源包在Zip文件中的路径</param>
     public GameModPackage(ZipFileReader zipFileReader, string assetPath)
     {
         if (zipFileReader != null)
@@ -72,26 +107,37 @@ public class GameModPackage : IDisposable
             IsZip = true;
             ZipFile = zipFileReader;
             AssetBundlePath = assetPath;
-            Name = zipFileReader.Url;
+            Name = Path.GetFileNameWithoutExtension(zipFileReader.Url);
+            FilePath = zipFileReader.Url;
             Initnaized = false;
             DefaultAssetFindType = GameModPackageAssetFindType.UseZip;
         }
         else throw new ArgumentNullException("zipFileReader");
     }
+    /// <summary>
+    /// 使用一个 AssetBundle 的路径初始化此 MOD 包为一个 AssetBundle MOD 包，
+    /// </summary>
+    /// <param name="assetPath">AssetBundle 路径</param>
     public GameModPackage(string assetPath)
     {
         IsZip = false;
         AssetBundlePath = assetPath;
         Name = assetPath;
+        FilePath = Path.GetFileNameWithoutExtension(assetPath);
         Initnaized = false;
         DefaultAssetFindType = GameModPackageAssetFindType.UseAssetBundle;
     }
+    /// <summary>
+    /// 使用一个 AssetBundle 初始化此 MOD 包为一个 AssetBundle MOD 包，
+    /// </summary>
+    /// <param name="assetBundle">AssetBundle</param>
     public GameModPackage(AssetBundle assetBundle)
     {
         IsZip = false;
         Initnaized = false;
         if (assetBundle != null)
         {
+            FilePath = assetBundle.name;
             AssetBundlePath = assetBundle.name;
             Name = assetBundle.name;
             BaseAssetPack = assetBundle;
@@ -113,23 +159,25 @@ public class GameModPackage : IDisposable
     /// </summary>
     public string Name { get; private set; }
     /// <summary>
-    /// 是否已加载zip包
+    /// 是否已开启zip支持和是否已加载zip包
     /// </summary>
     public bool IsZip { get; private set; }
     /// <summary>
-    /// GameMod对应的zip包
+    /// 此 Mod 对应的zip包（<see cref="IsZip"/> 为 true 时有效）
     /// </summary>
     public ZipFileReader ZipFile { get; private set; }
     /// <summary>
-    /// 默认资源寻找方式
+    /// 指定默认资源寻找方式，<see cref="GameModPackageAssetMgr"/> 会根据此值来寻找资源（如果您没有明确指定资源类型）
     /// </summary>
     public GameModPackageAssetFindType DefaultAssetFindType { get; set; }
+    public int VisitCount { get; set; }
+
     /// <summary>
-    /// AssetBundle 的文件位置（使用GameModPackage（string assetPath）初始化时才有效）
+    /// 此 Mod 的默认 AssetBundle 的路径（使用 <see cref="GameModPackage"/>(<see cref="string"/> assetPath) 初始化时才有效）
     /// </summary>
     public string AssetBundlePath { get; private set; }
     /// <summary>
-    /// 此mod的AssetBundle
+    /// 此 Mod 的默认 AssetBundle
     /// </summary>
     public AssetBundle BaseAssetPack { get; private set; }
     /// <summary>
@@ -152,8 +200,9 @@ public class GameModPackage : IDisposable
     /// <summary>
     /// 初始化数据（保存在ModDef.txt中）
     /// </summary>
-    public BFSReader InitnaizeDsbFile { get { return initBFSReader; } }
+    public BFSReader InitnaizeDefFile { get { return initBFSReader; } }
 
+    //ab包暂存结构
     private struct AssetBundleMr
     {
         public AssetBundleMr(AssetBundle assetBundle, string path)
@@ -166,29 +215,41 @@ public class GameModPackage : IDisposable
         public string path;
         public string name;
     }
+    //资源池
     private System.Collections.Generic.List<AssetBundleMr> loadedAssetBundles = new System.Collections.Generic.List<AssetBundleMr>();
+    //ModDef.txt 的读取器
     private BFSReader initBFSReader = null;
 
     /// <summary>
-    /// 加载该mod包
+    /// 加载该 MOD 包
     /// </summary>
-    /// <param name="agrs">初始化参数</param>
+    /// <param name="forceReload">是否强制重新加载</param>
+    /// <param name="forceAgrs">是否强制指定初始化参数</param>
+    /// <param name="agrs">指定初始化参数</param>
     /// <returns></returns>
-    public IEnumerator Initialize(bool forceReload)
+    public IEnumerator Initialize(bool forceReload, bool forceAgrs = false, GameModInitArgs agrs = null)
     {
+        //检测是否重新加载
         if (Initnaized || (InitnaizeFailed && !forceReload)) yield break;
 
         GameMgr.Log("Initializing package : {0} ...", Name);
 
-        GameModInitArgs agrs = new GameModInitArgs();
+        //init agrs
+        if (forceAgrs && agrs == null)
+        {
+            InitnaizeFailed = true;
+            GameMgr.LogErr("Package : {0} You have specified forceAgrs, but no parameters were provided.", Name);
+            yield break;
+        }
+        else if (!forceAgrs) agrs = new GameModInitArgs();
 
-        //加载AssetBundle
+        //加载默认AssetBundle
         if (BaseAssetPack == null)
         {
             if (string.IsNullOrEmpty(AssetBundlePath))
             {
                 InitnaizeFailed = true;
-                GameMgr.LogErr("GameModPackage:Initnaize: failed to load AssetBundle because AssetBundlePath is null !");
+                GameMgr.LogErr("Package : {0} failed to load AssetBundle because AssetBundlePath is null !", Name);
                 yield break;
             }
             else
@@ -201,15 +262,14 @@ public class GameModPackage : IDisposable
                         BaseAssetPack = AssetBundle.LoadFromStream(ms);
                         if (BaseAssetPack == null)
                         {
-                            GameMgr.LogErr("GameModPackage:Initnaize: failed to load AssetBundle in AssetBundle.LoadFromStream() !");
+                            GameMgr.LogErr("Package : " + Name + " failed to load AssetBundle in AssetBundle.LoadFromStream() !");
                             InitnaizeFailed = true;
                             yield break;
                         }
-                        Name = BaseAssetPack.name;
                     }
                     else
                     {
-                        GameMgr.LogErr("GameModPackage:Initnaize: failed to load AssetBundle because ZipFile load " + AssetBundlePath + " failed !");
+                        GameMgr.LogErr("Package : " + Name + " failed to load AssetBundle because ZipFile load " + AssetBundlePath + " failed !\nZipFileReader return error : " + ZipFile.LastError);
                         InitnaizeFailed = true;
                         yield break;
                     }
@@ -221,15 +281,12 @@ public class GameModPackage : IDisposable
                     if (string.IsNullOrEmpty(www.error))
                     {
                         if (www.assetBundle != null)
-                        {
                             BaseAssetPack = www.assetBundle;
-                            Name = BaseAssetPack.name;
-                        }
-                        else GameMgr.LogWarn("The \"" + AssetBundlePath + " \" does not contain AssetBundle.");
+                        else GameMgr.LogWarn("Package : " + Name + " The \"" + AssetBundlePath + " \" does not contain AssetBundle.");
                     }
                     else
                     {
-                        GameMgr.LogErr("GameModPackage:Initnaize: failed to load AssetBundle because AssetBundlePath is null !");
+                        GameMgr.LogErr("Package : " + Name + " failed to load AssetBundle ! \nError : " + www.error);
                         InitnaizeFailed = true;
                         yield break;
                     }
@@ -237,33 +294,43 @@ public class GameModPackage : IDisposable
             }
         }
 
-        //Read init cfg
+        //Read init cfg 读取 ModDef.txt
         if (BaseAssetPack != null)
         {
             TextAsset ta = BaseAssetPack.LoadAsset<TextAsset>("ModDef.txt");
             if (ta != null) initBFSReader = new BFSReader(ta);
-            else GameMgr.LogWarn("Package: {0} does not contain ModDef.txt .", Name);
+            else GameMgr.LogWarn("Package : {0} does not contain ModDef.txt .", Name);
         }
         else if (IsZip && ZipFile != null)
         {
             string s = ZipFile.GetText("ModDef.txt");
             if (s != null) initBFSReader = new BFSReader(s);
-            else GameMgr.LogWarn("Package: {0} does not contain ModDef.txt .", Name);
+            else GameMgr.LogWarn("Package : {0} does not contain ModDef.txt .", Name);
         }
-        if (initBFSReader != null)
+
+        //read init agrs
+        if (initBFSReader != null && !forceAgrs)
         {
             agrs.InitObj = bool.Parse(initBFSReader.GetPropertyValue("InitObj"));
             agrs.InitObjPerfabPath = initBFSReader.GetPropertyValue("InitObjPerfabPath");
             agrs.InitObjCodeType = (GameModCodeType)Enum.Parse(typeof(GameModCodeType), initBFSReader.GetPropertyValue("InitObjCodeType"));
             agrs.InitObjAttatchCode = bool.Parse(initBFSReader.GetPropertyValue("InitObjAttatchCode"));
             agrs.InitObjCodePath = initBFSReader.GetPropertyValue("InitObjCodePath");
+            agrs.InitObjLUACodeUseGlobalLuaState = bool.Parse(initBFSReader.GetPropertyValue("InitObjUseGlobalLuaState"));
             DefaultAssetFindType = (GameModPackageAssetFindType)Enum.Parse(typeof(GameModPackageAssetFindType), initBFSReader.GetPropertyValue("DefaultAssetFindType"));
         }
 
         if (agrs.InitObjCodeType == GameModCodeType.LUA)
         {
-            LuaState = new LuaState();
-            LuaState.Start();
+            if (agrs.InitObjLUACodeUseGlobalLuaState)
+            {
+                LuaState = GameBulider.GameBuliderInstance.GlobalLuaState;
+            }
+            else
+            {
+                LuaState = new LuaState();
+                LuaState.Start();
+            }
         }
         /*
         else if (agrs.InitObjCodeType == GameModCodeType.CSharp)
@@ -283,7 +350,7 @@ public class GameModPackage : IDisposable
                 GameMgr.LogWarn("GameModPackage:Initnaize: failed to load InitObj because Perfab {0} load failed !", agrs.InitObjPerfabPath);
             else
             {
-                gameObject.transform.SetParent(GameBulider.GameBuliderStatic.LevelHost.transform);
+                gameObject.transform.SetParent(GameBulider.GameBuliderInstance.LevelHost.transform);
                 if (agrs.InitObjAttatchCode && !string.IsNullOrEmpty(agrs.InitObjCodePath))
                 {
                     if (agrs.InitObjCodeType == GameModCodeType.Unknow)
@@ -342,19 +409,19 @@ public class GameModPackage : IDisposable
 
     public string EnumChildResPacks()
     {
-        string s = "子 资源包(" + ResPackCount + ")个";
+        string s = "子 资源包 (" + ResPackCount + ")个";
         foreach (AssetBundleMr m in loadedAssetBundles)
         {
-            s += m.assetBundle.name;
+            s += "\n" + m.assetBundle.name;
         }
         return s;
     }
     /// <summary>
-    /// 加载该mod包中的AssetBundle（在zip模式有效）
+    /// 加载该 Zip MOD 包中的 AssetBundle 至资源池中（仅为zip模式有效）
     /// </summary>
-    /// <param name="assetpath">AssetBundle路径</param>
-    /// <returns></returns>
-    public bool LoadModResPack(string assetpath)
+    /// <param name="assetpath">AssetBundle 文件路径或名称</param>
+    /// <returns>返回是否成功</returns>
+    public bool LoadModResPackInZip(string assetpath)
     {
         if (Initnaized)
         {
@@ -389,7 +456,7 @@ public class GameModPackage : IDisposable
         return false;
     }
     /// <summary>
-    /// 加载自定义 AssetBundle 至该mod包中
+    /// 加载自定义 AssetBundle 至该 MOD 包的资源池中
     /// </summary>
     /// <param name="filepath">自定义 AssetBundle 文件路径</param>
     /// <returns></returns>
@@ -429,10 +496,10 @@ public class GameModPackage : IDisposable
         yield break;
     }
     /// <summary>
-    /// 卸载该mod包中的自定义 AssetBundle
+    /// 卸载该 MOD 包的资源池中的自定义 AssetBundle
     /// </summary>
     /// <param name="path">自定义 AssetBundle</param>
-    /// <returns></returns>
+    /// <returns>返回是否成功</returns>
     public bool UnLoadResPack(string path, bool unloadallobjs = false)
     {
         if (Initnaized)

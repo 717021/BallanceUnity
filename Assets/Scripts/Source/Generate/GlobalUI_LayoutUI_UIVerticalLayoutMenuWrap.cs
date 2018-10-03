@@ -6,8 +6,8 @@ public class GlobalUI_LayoutUI_UIVerticalLayoutMenuWrap
 {
 	public static void Register(LuaState L)
 	{
-		L.BeginClass(typeof(GlobalUI.LayoutUI.UIVerticalLayoutMenu), typeof(GlobalUI.UIAutoLayoutMenu));
-		L.RegFunction("Oninit", Oninit);
+		L.BeginClass(typeof(GlobalUI.LayoutUI.UIVerticalLayoutMenu), typeof(GlobalUI.LayoutUI.UIAutoLayoutMenu));
+		L.RegFunction("OnInit", OnInit);
 		L.RegFunction("DoLayout", DoLayout);
 		L.RegFunction("UpdateMenu", UpdateMenu);
 		L.RegFunction("LockLayout", LockLayout);
@@ -21,13 +21,13 @@ public class GlobalUI_LayoutUI_UIVerticalLayoutMenuWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Oninit(IntPtr L)
+	static int OnInit(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 1);
 			GlobalUI.LayoutUI.UIVerticalLayoutMenu obj = (GlobalUI.LayoutUI.UIVerticalLayoutMenu)ToLua.CheckObject<GlobalUI.LayoutUI.UIVerticalLayoutMenu>(L, 1);
-			obj.Oninit();
+			obj.OnInit();
 			return 0;
 		}
 		catch (Exception e)

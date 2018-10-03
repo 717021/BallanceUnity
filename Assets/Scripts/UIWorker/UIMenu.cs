@@ -80,11 +80,11 @@ namespace GlobalUI
 
         }
 
-        public virtual void Oninit() { }
+        public virtual void OnInit() { }
 
         private void Start()
         {
-            Oninit();
+            OnInit();
         }
 
         private void OnDestroy()

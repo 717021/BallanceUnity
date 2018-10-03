@@ -7,24 +7,25 @@ using UnityEngine;
 namespace GlobalUI
 {
     /// <summary>
-    /// 
+    /// UI 布局元素
     /// </summary>
     public class UIElement : MonoBehaviour
     {
         private void Start()
         {
             rectTransform = GetComponent<RectTransform>();
-            Oninit();
+            OnInit();
         }
 
-
-        public virtual void Oninit() { }
-
+        /// <summary>
+        /// 初始化事件
+        /// </summary>
+        public virtual void OnInit() { }
 
         private RectTransform rectTransform;
 
         /// <summary>
-        /// 
+        /// 获取 RectTransform
         /// </summary>
         public RectTransform RectTransform
         {
@@ -36,21 +37,21 @@ namespace GlobalUI
             }
         }
         /// <summary>
-        /// 
+        /// 默认显示
         /// </summary>
         public virtual void Show()
         {
             gameObject.SetActive(true);
         }
         /// <summary>
-        /// 
+        /// 默认隐藏
         /// </summary>
         public virtual void Hide()
         {
             gameObject.SetActive(false);
         }
         /// <summary>
-        /// 
+        /// 默认获取是否显示
         /// </summary>
         /// <returns></returns>
         public virtual bool IsShowed()
@@ -59,12 +60,19 @@ namespace GlobalUI
         }
 
         /// <summary>
-        /// 
+        /// 布局间隔
         /// </summary>
         public int SpaceStart { get; set; }
 
+        /// <summary>
+        /// 名称
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// 默认初始化参数
+        /// </summary>
+        /// <param name="initstr"></param>
         public virtual void StartSet(string initstr)
         {
 

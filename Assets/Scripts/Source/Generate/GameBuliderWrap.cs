@@ -6,31 +6,31 @@ public class GameBuliderWrap
 {
 	public static void Register(LuaState L)
 	{
-		L.BeginClass(typeof(GameBulider), typeof(UnityEngine.MonoBehaviour));
-		L.RegFunction("ExitGame", ExitGame);
+		L.BeginStaticLibs("GameBulider");
+		L.RegFunction("ExitGameClear", ExitGameClear);
 		L.RegFunction("__eq", op_Equality);
-		L.RegFunction("__tostring", ToLua.op_ToString);
-		L.RegVar("GameBuliderStatic", get_GameBuliderStatic, set_GameBuliderStatic);
 		L.RegVar("perfabCube", get_perfabCube, set_perfabCube);
 		L.RegVar("perfabEmepty", get_perfabEmepty, set_perfabEmepty);
 		L.RegVar("uiMgr", get_uiMgr, set_uiMgr);
 		L.RegVar("uiHost", get_uiHost, set_uiHost);
+		L.RegVar("GameBuliderInstance", get_GameBuliderInstance, null);
+		L.RegVar("GlobalLuaState", get_GlobalLuaState, null);
 		L.RegVar("LevelHost", get_LevelHost, null);
 		L.RegVar("CommandManager", get_CommandManager, null);
 		L.RegVar("UIManager", get_UIManager, null);
 		L.RegVar("GameMgr", get_GameMgr, null);
 		L.RegVar("GameModLoader", get_GameModLoader, null);
-		L.EndClass();
+		L.EndStaticLibs();
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int ExitGame(IntPtr L)
+	static int ExitGameClear(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 1);
 			GameBulider obj = (GameBulider)ToLua.CheckObject<GameBulider>(L, 1);
-			obj.ExitGame();
+			obj.ExitGameClear();
 			return 0;
 		}
 		catch (Exception e)
@@ -49,20 +49,6 @@ public class GameBuliderWrap
 			UnityEngine.Object arg1 = (UnityEngine.Object)ToLua.ToObject(L, 2);
 			bool o = arg0 == arg1;
 			LuaDLL.lua_pushboolean(L, o);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_GameBuliderStatic(IntPtr L)
-	{
-		try
-		{
-			ToLua.Push(L, GameBulider.GameBuliderStatic);
 			return 1;
 		}
 		catch (Exception e)
@@ -144,6 +130,39 @@ public class GameBuliderWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index uiHost on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_GameBuliderInstance(IntPtr L)
+	{
+		try
+		{
+			ToLua.Push(L, GameBulider.GameBuliderInstance);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_GlobalLuaState(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			GameBulider obj = (GameBulider)o;
+			LuaInterface.LuaState ret = obj.GlobalLuaState;
+			ToLua.PushObject(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index GlobalLuaState on a nil value");
 		}
 	}
 
@@ -239,21 +258,6 @@ public class GameBuliderWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index GameModLoader on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_GameBuliderStatic(IntPtr L)
-	{
-		try
-		{
-			GameBulider arg0 = (GameBulider)ToLua.CheckObject<GameBulider>(L, 2);
-			GameBulider.GameBuliderStatic = arg0;
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
 		}
 	}
 

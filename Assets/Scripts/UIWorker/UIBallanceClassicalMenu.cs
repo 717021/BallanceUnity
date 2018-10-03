@@ -3,11 +3,14 @@ using UnityEngine;
 
 namespace GlobalUI
 {
+    /// <summary>
+    /// Ballance 经典样式菜单
+    /// </summary>
     public class UIBallanceClassicalMenu : UIVerticalLayoutMenu
     {
-        public override void Oninit()
+        public override void OnInit()
         {
-            base.Oninit();
+            base.OnInit();
             innern = transform.GetChild(0).gameObject;
             transformHost = innern.transform;
             rectTransformInnern = innern.GetComponent<RectTransform>();

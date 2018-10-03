@@ -9,10 +9,10 @@ public class GameModPackageAssetMgrWrap
 		L.BeginStaticLibs("GameModPackageAssetMgr");
 		L.RegFunction("InitObjWithPackageAsset", InitObjWithPackageAsset);
 		L.RegFunction("InitObjWithPerfab", InitObjWithPerfab);
-		L.RegFunction("GetPackagePerfab", GetPackagePerfab);
 		L.RegFunction("GetPackageCodeAndAttatchLUA", GetPackageCodeAndAttatchLUA);
 		L.RegFunction("GetPackageCodeAndAttatchCs", GetPackageCodeAndAttatchCs);
-		L.RegFunction("ResolveAssetPath", ResolveAssetPath);
+		L.RegFunction("GetPackageTextAsset", GetPackageTextAsset);
+		L.RegFunction("GetPackagePerfab", GetPackagePerfab);
 		L.EndStaticLibs();
 	}
 
@@ -85,24 +85,6 @@ public class GameModPackageAssetMgrWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetPackagePerfab(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 2);
-			GameModPackage arg0 = (GameModPackage)ToLua.CheckObject<GameModPackage>(L, 1);
-			string arg1 = ToLua.CheckString(L, 2);
-			UnityEngine.GameObject o = GameModPackageAssetMgr.GetPackagePerfab(arg0, arg1);
-			ToLua.PushSealed(L, o);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int GetPackageCodeAndAttatchLUA(IntPtr L)
 	{
 		try
@@ -141,14 +123,33 @@ public class GameModPackageAssetMgrWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int ResolveAssetPath(IntPtr L)
+	static int GetPackageTextAsset(IntPtr L)
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 1);
-			string arg0 = ToLua.CheckString(L, 1);
-			string[] o = GameModPackageAssetMgr.ResolveAssetPath(arg0);
+			ToLua.CheckArgsCount(L, 2);
+			GameModPackage arg0 = (GameModPackage)ToLua.CheckObject<GameModPackage>(L, 1);
+			string arg1 = ToLua.CheckString(L, 2);
+			UnityEngine.TextAsset o = GameModPackageAssetMgr.GetPackageTextAsset(arg0, arg1);
 			ToLua.Push(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetPackagePerfab(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			GameModPackage arg0 = (GameModPackage)ToLua.CheckObject<GameModPackage>(L, 1);
+			string arg1 = ToLua.CheckString(L, 2);
+			UnityEngine.GameObject o = GameModPackageAssetMgr.GetPackagePerfab(arg0, arg1);
+			ToLua.PushSealed(L, o);
 			return 1;
 		}
 		catch (Exception e)

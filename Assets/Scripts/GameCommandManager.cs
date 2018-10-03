@@ -27,11 +27,13 @@ public class GameCommandManager : MonoBehaviour, IGameBasePart
     public RectTransform textLinesRectTransform;
     public RectTransform textLinesViewRectTransform;
     public LayoutElement textLinesLayoutElement;
-    public GameObject panelCommand, textShowCmd;
+    public GameObject panelCommand, textShowCmd, displayRunInfo;
     public Text textLines, textTips;
     public InputField inputCommand;
     public DUIDrag dragCommand;
-
+    public DUIRayIgnore cmdlinesDUIRayIgnore;
+    public ScrollRect cmdlinesScrollRect;
+    public DUIRayIgnore textLinesDUIRayIgnore;
 
     /// <summary>
     /// 获取CommandManager实例，可能为空
@@ -54,28 +56,34 @@ public class GameCommandManager : MonoBehaviour, IGameBasePart
                 DisplayInfoUi.SetPos(CommandShow);
                 if (value)
                 {
+                    cmdlinesDUIRayIgnore.enabled = false;
+                    textLinesDUIRayIgnore.enabled = false;
+                    cmdlinesScrollRect.horizontal = true;
+                    cmdlinesScrollRect.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
+                    cmdlinesScrollRect.vertical = true;
+                    cmdlinesScrollRect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
                     textShowCmd.SetActive(false);
                     panelCommand.SetActive(true);
+                    displayRunInfo.SetActive(false);
                     commandShowed2Count = 0;
                     commandDisplays2.Clear();
                     CommandShowEnd();
                 }
                 else
                 {
+                    cmdlinesDUIRayIgnore.enabled = true;
+                    textLinesDUIRayIgnore.enabled = true;
+                    cmdlinesScrollRect.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
+                    cmdlinesScrollRect.horizontal = false;
+                    cmdlinesScrollRect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
+                    cmdlinesScrollRect.vertical = false;
                     panelCommand.SetActive(false);
                     textShowCmd.SetActive(true);
+                    displayRunInfo.SetActive(true);
                     textLines.text = "";
                 }
             }
         }
-    }
-    /// <summary>
-    /// 当前显示的信息条目位置
-    /// </summary>
-    public int CommandShowPos
-    {
-        get { return commandShowPos; }
-        set { SetCommandShowPos(value); }
     }
 
     public GameBulider GameBulider { get; set; }
@@ -83,21 +91,30 @@ public class GameCommandManager : MonoBehaviour, IGameBasePart
     private bool isHoneButtonDown = false;
     private bool isEndButtonDown = false;
     private bool isF1ButtonDown = false;
-    private bool isPageUpButtonDown = false;
-    private bool isPageDownButtonDown = false;
     private bool isSCButtonDown = false;
 
     private string commandShowFilter = "All";
     private bool commandShow = true;
     private int sx = 0;
-    private int sx2 = 0;
-    private int sxs = 30;
-    private bool scdirect = false;
-    private bool scmouse = false;
+
     private bool showedcmdtip = false;
     private bool showedcmdstip = false;
-    private int commandShowPos = 0;
     private int commandShowed2Count = 0;
+    private class Dspl1
+    {
+        public Dspl1(string str)
+        {
+            this.str = str;
+            if (str.Contains("\n"))
+                lines = System.Text.RegularExpressions.Regex.Matches(str, @"\n").Count;
+        }
+        public string str; public int lines = 1;
+
+        public override string ToString()
+        {
+            return str;
+        }
+    }
     private class Dspl2
     {
         public Dspl2(string name, int ccc) { this.name = name; this.ccc = ccc; }
@@ -112,13 +129,16 @@ public class GameCommandManager : MonoBehaviour, IGameBasePart
         if (i >= 10 && i <= 50)
         {
             MaxDisplayItem = i;
-            textLinesRectTransform.sizeDelta = new Vector2(textLinesRectTransform.sizeDelta.x, 13 * i);
+            textLinesRectTransform.sizeDelta = new Vector2(textLinesRectTransform.sizeDelta.x, 13 * i - 50);
             textLinesRectTransform.anchoredPosition = new Vector2(textLinesRectTransform.anchoredPosition.x, -13.83391f - (13 * (i - 1)) / 2f);
-
-            textLinesViewRectTransform.sizeDelta = new Vector2(textLinesViewRectTransform.sizeDelta.x, 40 + 13 * i);
+            textLinesViewRectTransform.sizeDelta = new Vector2(textLinesViewRectTransform.sizeDelta.x, 40 + 13 * i - 50);
             textLinesViewRectTransform.anchoredPosition = new Vector2(textLinesViewRectTransform.anchoredPosition.x, -22.7f - (13 * (i - 1)) / 2f);
+            textLinesLayoutElement.minHeight = textLinesViewRectTransform.sizeDelta.y - 10;
+
             panelCommandRectTransform.sizeDelta = new Vector2(panelCommandRectTransform.sizeDelta.x, 40 + 13 * i);
             panelCommandRectTransform.anchoredPosition = new Vector2(panelCommandRectTransform.anchoredPosition.x, -22.7f - (13 * (i - 1)) / 2f);
+
+            textLinesLayoutElement.minHeight = textLinesViewRectTransform.sizeDelta.y - 5;
         }
     }
     private void SetCommandTip(string s)
@@ -136,59 +156,16 @@ public class GameCommandManager : MonoBehaviour, IGameBasePart
             DisplayCommand();
         }
     }
-    private void SetCommandShowPos(int pos)
-    {
-        if (pos < commandDisplays.Count - (MaxDisplayItem - 1))
-        {
-            commandShowPos = pos;
-            DisplayCommand();
-        }
-        else pos = commandDisplays.Count - MaxDisplayItem;
-    }
-    private void CommandShowDown()
-    {
-        if (commandShowPos < commandDisplays.Count - (MaxDisplayItem - 1))
-        {
-            commandShowPos++;
-            DisplayCommand();
-        }
-    }
-    private void CommandShowUp()
-    {
-        if (commandShowPos > 0)
-        {
-            commandShowPos--;
-            DisplayCommand();
-        }
 
-    }
-    private void CommandShowAnyPos(int i)
-    {
-
-        if (i < commandDisplays.Count - (MaxDisplayItem - 1))
-        {
-            if (i > 0)
-                commandShowPos = i;
-            else commandShowPos = 0;
-        }
-        else commandShowPos = commandDisplays.Count - (MaxDisplayItem - 1);
-        DisplayCommand();
-    }
     private void CommandShowHome()
     {
-        if (commandShowPos > 0)
-        {
-            commandShowPos = 0;
-            DisplayCommand();
-        }
+        DisplayCommand();
+        cmdlinesScrollRect.verticalScrollbar.value = 1;
     }
     private void CommandShowEnd()
     {
-        if (commandShowPos < commandDisplays.Count - (MaxDisplayItem - 1))
-        {
-            commandShowPos = commandDisplays.Count - (MaxDisplayItem - 1);
-        }
         DisplayCommand();
+        cmdlinesScrollRect.verticalScrollbar.value = 0;
     }
     private void NextCommandShowFilter()
     {
@@ -205,56 +182,16 @@ public class GameCommandManager : MonoBehaviour, IGameBasePart
     {
         if (showedcmdstip) showedcmdstip = false;
         if (showedcmdtip) showedcmdtip = false;
-        
-        textLines.text = "";
-        if (commandDisplays.Count > MaxDisplayItem)
-        {
-            int imax = commandShowPos;
-            imax += MaxDisplayItem;
-            bool flag = imax < commandDisplays.Count + 1;
-            if (flag) imax -= 1;
 
-            if (commandShowPos > 0)
-            {
-                textLines.text += "<color=#1177ffff>上面还有</color><color=#66eeeeff>" + (commandShowPos).ToString() + "</color> <color=#1177ffff>条消息</color>\n";
-                imax -= 1;
-
-                for (int i = commandShowPos; i < commandDisplays.Count && i < imax; i++)
-                {
-                    if (commandDisplays[i].Contains("\n"))
-                    {
-                        imax -= (System.Text.RegularExpressions.Regex.Matches(commandDisplays[i], @"\n").Count + 2);
-                        flag = imax < commandDisplays.Count + 1;
-                    }
-                    textLines.text += commandDisplays[i] + "\n";
-                }
-                if (flag) textLines.text += "<color=#1177ffff>下面还有</color><color=#66eeeeff>" + (commandDisplays.Count - 1 - imax).ToString() + "</color> <color=#1177ffff>条消息</color>";
-            }
-            else
-            {
-                for (int i = commandShowPos; i < commandDisplays.Count && i < imax; i++)
-                {
-                    if (commandDisplays[i].Contains("\n"))
-                    {
-                        imax -= (System.Text.RegularExpressions.Regex.Matches(commandDisplays[i], @"\n").Count + 2);
-                        flag = imax < commandDisplays.Count + 1;
-                    }
-                    textLines.text += commandDisplays[i] + "\n";
-                }
-                if (flag) textLines.text += "<color=#1177ffff>下面还有</color><color=#66eeeeff>" + (commandDisplays.Count - 1 - imax).ToString() + "</color> <color=#1177ffff>条消息</color>";
-            }
-        }
-        else
-        {
-            foreach (string s in commandDisplays)
-                textLines.text += s + "\n";
-        }
+        textLines.text = "\n";
+        foreach (string d in commandDisplays)
+            textLines.text += d + "\n";
     }
     private void DisplayCommandFff()
     {
-        textLines.text = "";
+        textLines.text = "\n";
         foreach (Dspl2 s in commandDisplays2)
-            textLines.text += s.name + "\n";
+            textLines.text += "  " + s.name + "\n";
     }
 
     /// <summary>
@@ -300,16 +237,25 @@ public class GameCommandManager : MonoBehaviour, IGameBasePart
     /// <param name="s">信息</param>
     public void OutPut(string s)
     {
-        commandDisplays.Insert(commandDisplays.Count, s);
-        if (commandShow)
+        if (commandDisplays.Count > 100)
+            commandDisplays.RemoveAt(0);
+
+        string dsp = null;
+        if (s.Contains("\n"))
         {
-            if (commandShowPos == commandDisplays.Count - (MaxDisplayItem - 1))
+            string sss = "";
+            string[] ss = s.Split('\n');
+            if (ss.Length > 1)
             {
-                commandShowPos++;
-                DisplayCommand();
+                foreach (string sx in ss)
+                    sss += "  " + sx + "  \n";
+                dsp = sss.Remove(sss.Length - 1);
             }
+            else dsp ="  " + s + "  ";
         }
-        else
+        else dsp = "  " + s + "  ";
+        commandDisplays.Insert(commandDisplays.Count, dsp);
+        if (!commandShow)
         {
             if (commandShowed2Count >= MaxDisplayItem)
             {
@@ -321,7 +267,8 @@ public class GameCommandManager : MonoBehaviour, IGameBasePart
             }
             else
             {
-                textLines.text += s + "\n";
+                if(!textLines.text.EndsWith("\n"))
+                    textLines.text += s + "\n";
                 commandDisplays2.Add(new Dspl2(s, 5));
                 commandShowed2Count++;
             }
@@ -334,7 +281,8 @@ public class GameCommandManager : MonoBehaviour, IGameBasePart
     /// <param name="sender">发送者名称</param>
     public void OutPutError(string s, string sender = "")
     {
-        OutPut("<color=#FF7256>[" + sender + "] Error " + s + "</color>");
+        if (string.IsNullOrEmpty(sender)) OutPut("<color=#FF7256>" + s + "</color>");
+        else OutPut("<color=#FF7256>[" + sender + "] Error " + s + "</color>");
     }
     /// <summary>
     /// 输出警告信息到控制台
@@ -343,7 +291,8 @@ public class GameCommandManager : MonoBehaviour, IGameBasePart
     /// <param name="sender">发送者名称</param>
     public void OutPutWarn(string s, string sender = "")
     {
-        OutPut("<color=#FFB90F>[" + sender + "] Warning " + s + "</color>");
+        if (string.IsNullOrEmpty(sender)) OutPut("<color=#FFB90F>" + s + "</color>");
+        else OutPut("<color=#FFB90F>[" + sender + "] Warning " + s + "</color>");
     }
     /// <summary>
     /// 输出信息到控制台
@@ -352,7 +301,8 @@ public class GameCommandManager : MonoBehaviour, IGameBasePart
     /// <param name="sender">发送者名称</param>
     public void OutPutInfo(string s, string sender = "")
     {
-        OutPut("<color=#1177ffff>[ " + sender + "] Info " + s + "</color>");
+        if (string.IsNullOrEmpty(sender)) OutPut("<color=#1177ffff>" + s + "</color>");
+        else OutPut("<color=#1177ffff>[ " + sender + "] Info " + s + "</color>");
     }
 
     /// <summary>
@@ -451,9 +401,9 @@ public class GameCommandManager : MonoBehaviour, IGameBasePart
         for (int i = 0; i < MaxDisplayItem - 1 && i < registeredCommands.Count; i++)
         {
             if (registeredCommands[i].tipColor != "")
-                textLines.text += registeredCommands[i].ToString() + "  --  <color=" + registeredCommands[i].tipColor
+                textLines.text += "  " + registeredCommands[i].ToString() + "  --  <color=" + registeredCommands[i].tipColor
                     + ">" + registeredCommands[i].tip + "</color>" + "\n";
-            else textLines.text += registeredCommands[i].ToString() + "  --  " + registeredCommands[i].tip + "\n";
+            else textLines.text += "  " + registeredCommands[i].ToString() + "  --  " + registeredCommands[i].tip + "\n";
         }
         textLines.text += "</color>";
     }
@@ -467,18 +417,20 @@ public class GameCommandManager : MonoBehaviour, IGameBasePart
             {
                 textLines.text = "";
                 for (int i2 = 0; i2 < MaxDisplayItem - 2; i2++) textLines.text += "\n";
-                textLines.text += "<color=#ffffff>" + s + "</color>";
+                textLines.text += "  <color=#ffffff>" + s + "</color>";
                 lasetEnterCmd = registeredCommands[i];
                 return;
             }
             else if (sz.Contains(s)) 
-                textLines.text += sz.Replace(s, "<color=#ffffff>" + s + "</color>") + "\n";
+                textLines.text += "  " + sz.Replace(s, "<color=#ffffff>" + s + "</color>") + "\n";
         }
         lasetEnterCmd = null;
         textLines.text += "</color>";
     }
     private void MakeCmdsHlp4(string s, int index)
     {
+        //这是一段很烂的代码，但是暂时运行
+        //是没有问题，所以不想改他了
         if (index > 0 && lasetEnterCmd != null)
         {
             textLines.text = "<color=#888888>";
@@ -513,13 +465,13 @@ public class GameCommandManager : MonoBehaviour, IGameBasePart
                                         string sz = pararmFormat.pararmChoices[x];
                                         if (sz.Contains(s))
                                         {
-                                            textLines.text += sz.Replace(s, "<color=#ffffff>" + s + "</color>") + "\n";
+                                            textLines.text += sz.Replace(s, "  <color=#ffffff>" + s + "</color>") + "\n";
                                             useable_line--;
                                             if (useable_line == 1) textLines.text += "...\n";
                                         }
                                         else
                                         {
-                                            textLines.text += sz + "\n";
+                                            textLines.text += "  " + sz + "\n";
                                             useable_line--;
                                             if (useable_line == 1) textLines.text += "...\n";
                                         }
@@ -532,14 +484,14 @@ public class GameCommandManager : MonoBehaviour, IGameBasePart
                                 }
                                 else for (int i2 = 0; i2 < MaxDisplayItem - 2; i2++) textLines.text += "\n";
                                 if (pararmFormat.pararmType != "")
-                                    textLines.text += "  <color=#ffffff><" + pararmFormat.pararmType + ":" + pararmFormat.pararmName + "></color>";
-                                else if (pararmFormat.pararmName != "") textLines.text += "  <color=#ffffff><" + pararmFormat.pararmName + "></color>";
+                                    textLines.text += "    <color=#ffffff><" + pararmFormat.pararmType + ":" + pararmFormat.pararmName + "></color>";
+                                else if (pararmFormat.pararmName != "") textLines.text += "    <color=#ffffff><" + pararmFormat.pararmName + "></color>";
                             }
                             else
                             {
                                 if (pararmFormat.pararmType != "")
-                                    textLines.text += "  <" + pararmFormat.pararmType + ":" + pararmFormat.pararmName + ">";
-                                else if(pararmFormat.pararmName != "") textLines.text += "  <" + pararmFormat.pararmName + ">";
+                                    textLines.text += "    <" + pararmFormat.pararmType + ":" + pararmFormat.pararmName + ">";
+                                else if(pararmFormat.pararmName != "") textLines.text += "    <" + pararmFormat.pararmName + ">";
                             }
                         }
                         useable_line--;
@@ -865,7 +817,7 @@ public class GameCommandManager : MonoBehaviour, IGameBasePart
         DisplayInfoUi.gameObject.SetActive(canUseCommandTool);
         if (canUseCommandTool) DisplayInfoUi.SetPos(CommandShow);
 
-        textLinesLayoutElement.minWidth = Screen.width - 20;
+        textLinesLayoutElement.minWidth = Screen.width - 10;
 
         instance = this;
         if (GameSettings.CmdLine > 15)
@@ -879,6 +831,8 @@ public class GameCommandManager : MonoBehaviour, IGameBasePart
         RegisterCommand("output", OutPutCommandReceiverHandler, "输出");
         RegisterCommand("cmdline", SetLineCommandReceiverHandler, "设置控制台显示消息数量", "cmdline int:count", 1);
         RegisterCommand("test", TESTCommandReceiverHandler, "测试指令", "test enum:type:test1/enum2/enum3 string:x int:y");
+
+
 
         /*for (int i = 0; i < 50; i++)
             OutPut(i.ToString() + "   xxx");*/
@@ -921,21 +875,7 @@ public class GameCommandManager : MonoBehaviour, IGameBasePart
             else if (Input.GetKeyUp(KeyCode.F12) && isF1ButtonDown) isF1ButtonDown = false;
             else if (commandShow)
             {
-                if (Input.GetKeyDown(KeyCode.PageDown) && !isPageDownButtonDown) isPageDownButtonDown = true;
-                else if (Input.GetKeyUp(KeyCode.PageDown) && isPageDownButtonDown)
-                {
-                    isPageDownButtonDown = false;
-                    sxs = 30;
-                }
-
-                else if (Input.GetKeyDown(KeyCode.PageUp) && !isPageUpButtonDown) isPageUpButtonDown = true;
-                else if (Input.GetKeyUp(KeyCode.PageUp) && isPageUpButtonDown)
-                {
-                    isPageUpButtonDown = false;
-                    sxs = 30;
-                }
-
-                else if (Input.GetKeyDown(KeyCode.Home) && !isHoneButtonDown)
+                if (Input.GetKeyDown(KeyCode.Home) && !isHoneButtonDown)
                 {
                     isHoneButtonDown = true;
                     CommandShowHome();
@@ -955,52 +895,6 @@ public class GameCommandManager : MonoBehaviour, IGameBasePart
                     NextCommandShowFilter();
                 }
                 else if (isSCButtonDown && ((Input.GetKeyUp(KeyCode.LeftControl) && Input.GetKeyUp(KeyCode.LeftShift)) || Input.GetKeyUp(KeyCode.LeftControl) && Input.GetKeyUp(KeyCode.RightShift))) isSCButtonDown = false;
-
-                else if (dragCommand.isDrag)
-                {
-                    if (dragCommand.isDraged)
-                    {
-                        float y = dragCommand.DragOffist.y;
-                        if (y != 0)
-                        {
-                            float ya = Mathf.Abs(y);
-                            if (ya > 25) sxs = 10;
-                            else if (ya > 20) sxs = 20;
-                            else if (ya > 15) sxs = 30;
-                            else if (ya > 10) sxs = 40;
-                            else if (ya > 5) sxs = 50;
-                            else sxs = 60;
-                            scdirect = y < 0;
-                            scmouse = true;
-                        }
-                        else scmouse = false;
-                    }
-                    else scmouse = false;
-                }
-
-                if (sx2 < sxs) sx2++;
-                else
-                {
-                    sx2 = 0;
-                    if (isPageDownButtonDown)
-                    {
-                        CommandShowDown();
-                        if (sxs > 5)
-                            sxs -= 5;
-                    }
-                    else if (isPageUpButtonDown)
-                    {
-                        CommandShowUp();
-                        if (sxs > 5)
-                            sxs -= 5;
-                    }
-                    else if (scmouse)
-                    {
-                        if (scdirect) CommandShowAnyPos(commandShowPos - 1);
-                        else CommandShowAnyPos(commandShowPos + 1);
-                        scmouse = false;
-                    }
-                }
             }
             else
             {

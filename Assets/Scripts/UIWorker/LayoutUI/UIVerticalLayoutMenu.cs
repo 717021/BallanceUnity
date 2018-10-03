@@ -2,6 +2,9 @@
 
 namespace GlobalUI.LayoutUI
 {
+    /// <summary>
+    /// 垂直布局菜单
+    /// </summary>
     public class UIVerticalLayoutMenu : UIAutoLayoutMenu
     {
         private int lastStartLayoutPos = 0;
@@ -9,10 +12,9 @@ namespace GlobalUI.LayoutUI
 
         protected Transform transformHost = null;
 
-
-        public override void Oninit()
+        public override void OnInit()
         {
-            base.Oninit();
+            base.OnInit();
             if (transformHost == null)
                 transformHost = transform;
         }

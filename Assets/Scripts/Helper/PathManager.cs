@@ -6,15 +6,39 @@ using UnityEngine;
 
 namespace Helper
 {
+    /// <summary>
+    /// 全局资源路径解析器
+    /// </summary>
     public static class GamePathManager
     {
-        public const string DEBUG_PATH = "E:/Game/Ballance2/Debug/";
-        public const string DEBUG_MODS_PATH = "E:/Game/Ballance2/Debug/mods/";
-        public const string DEBUG_LEVELS_PATH = "E:/Game/Ballance2/Debug/levels/";
+        /// <summary>
+        /// 调试路径（当前目录）<c>（您在调试时请将其更改为自己项目存放目录）</c>
+        /// </summary>
+        public const string DEBUG_PATH = "E:/Game/BallanceUnity/Debug/";
+        /// <summary>
+        /// 调试路径（当前模组目录）<c>（您在调试时请将其更改为自己项目存放目录）</c>
+        /// </summary>
+        public const string DEBUG_MODS_PATH = "E:/Game/BallanceUnity/Debug/mods/";
+        /// <summary>
+        /// 调试路径（当前关卡目录）<c>（您在调试时请将其更改为自己项目存放目录）</c>
+        /// </summary>
+        public const string DEBUG_LEVELS_PATH = "E:/Game/BallanceUnity/Debug/levels/";
 
+        /// <summary>
+        /// 安卓系统模组目录
+        /// </summary>
         public const string ANDROID_MODS_PATH = "/sdcard/games/com.magical.ballance2/mods/";
+        /// <summary>
+        /// 安卓系统关卡目录
+        /// </summary>
         public const string ANDROID_LEVELS_PATH = "/sdcard/games/com.magical.ballance2/levels/";
 
+        /// <summary>
+        /// 获取资源真实路径
+        /// </summary>
+        /// <param name="type">资源种类（level：关卡、mod：模组）</param>
+        /// <param name="pathorname">相对路径或名称</param>
+        /// <returns></returns>
         public static string GetResRealPath(string type, string pathorname)
         {
             if (type == "level")
@@ -43,6 +67,11 @@ namespace Helper
             }
             return "";
         }
+        /// <summary>
+        /// 获取关卡资源真实路径
+        /// </summary>
+        /// <param name="pathorname">关卡的相对路径或名称</param>
+        /// <returns></returns>
         public static string GetLevelRealPath(string pathorname)
         {
 #if UNITY_EDITOR

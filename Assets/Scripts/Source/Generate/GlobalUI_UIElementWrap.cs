@@ -7,7 +7,7 @@ public class GlobalUI_UIElementWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(GlobalUI.UIElement), typeof(UnityEngine.MonoBehaviour));
-		L.RegFunction("Oninit", Oninit);
+		L.RegFunction("OnInit", OnInit);
 		L.RegFunction("Show", Show);
 		L.RegFunction("Hide", Hide);
 		L.RegFunction("IsShowed", IsShowed);
@@ -21,13 +21,13 @@ public class GlobalUI_UIElementWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Oninit(IntPtr L)
+	static int OnInit(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 1);
 			GlobalUI.UIElement obj = (GlobalUI.UIElement)ToLua.CheckObject<GlobalUI.UIElement>(L, 1);
-			obj.Oninit();
+			obj.OnInit();
 			return 0;
 		}
 		catch (Exception e)

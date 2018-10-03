@@ -832,8 +832,6 @@ public class FBXImporter : MonoBehaviour{
 	{
 		int depthStart = depth;
 		string[] split;
-		int i;
-		
 		
 		while(true)
 		{

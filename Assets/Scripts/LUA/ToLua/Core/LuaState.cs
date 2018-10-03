@@ -1907,7 +1907,7 @@ namespace LuaInterface
                     if (!missSet.Contains(t))
                     {
                         missSet.Add(t);
-                        Debugger.LogWarning("Type {0} not wrap to lua, push as {1}, the warning is only raised once", LuaMisc.GetTypeName(t), LuaMisc.GetTypeName(type));
+                        Debug.LogWarning(string.Format("Type {0} not wrap to lua, push as {1}, the warning is only raised once", LuaMisc.GetTypeName(t), LuaMisc.GetTypeName(type)));
                     }
 #endif                    
                     return reference;              

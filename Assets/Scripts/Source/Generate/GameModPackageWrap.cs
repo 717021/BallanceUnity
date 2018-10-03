@@ -11,7 +11,7 @@ public class GameModPackageWrap
 		L.RegFunction("Initialize", Initialize);
 		L.RegFunction("HasResPack", HasResPack);
 		L.RegFunction("EnumChildResPacks", EnumChildResPacks);
-		L.RegFunction("LoadModResPack", LoadModResPack);
+		L.RegFunction("LoadModResPackInZip", LoadModResPackInZip);
 		L.RegFunction("LoadFlieResPack", LoadFlieResPack);
 		L.RegFunction("UnLoadResPack", UnLoadResPack);
 		L.RegFunction("New", _CreateGameModPackage);
@@ -22,13 +22,14 @@ public class GameModPackageWrap
 		L.RegVar("IsZip", get_IsZip, null);
 		L.RegVar("ZipFile", get_ZipFile, null);
 		L.RegVar("DefaultAssetFindType", get_DefaultAssetFindType, set_DefaultAssetFindType);
+		L.RegVar("VisitCount", get_VisitCount, set_VisitCount);
 		L.RegVar("AssetBundlePath", get_AssetBundlePath, null);
 		L.RegVar("BaseAssetPack", get_BaseAssetPack, null);
 		L.RegVar("LuaState", get_LuaState, null);
 		L.RegVar("NativeMod", get_NativeMod, null);
 		L.RegVar("Initnaized", get_Initnaized, null);
 		L.RegVar("InitnaizeFailed", get_InitnaizeFailed, null);
-		L.RegVar("InitnaizeDsbFile", get_InitnaizeDsbFile, null);
+		L.RegVar("InitnaizeDefFile", get_InitnaizeDefFile, null);
 		L.EndClass();
 	}
 
@@ -93,12 +94,39 @@ public class GameModPackageWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 2);
-			GameModPackage obj = (GameModPackage)ToLua.CheckObject<GameModPackage>(L, 1);
-			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
-			System.Collections.IEnumerator o = obj.Initialize(arg0);
-			ToLua.Push(L, o);
-			return 1;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2)
+			{
+				GameModPackage obj = (GameModPackage)ToLua.CheckObject<GameModPackage>(L, 1);
+				bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+				System.Collections.IEnumerator o = obj.Initialize(arg0);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else if (count == 3)
+			{
+				GameModPackage obj = (GameModPackage)ToLua.CheckObject<GameModPackage>(L, 1);
+				bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+				bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
+				System.Collections.IEnumerator o = obj.Initialize(arg0, arg1);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else if (count == 4)
+			{
+				GameModPackage obj = (GameModPackage)ToLua.CheckObject<GameModPackage>(L, 1);
+				bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+				bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
+				GameModPackage.GameModInitArgs arg2 = (GameModPackage.GameModInitArgs)ToLua.CheckObject<GameModPackage.GameModInitArgs>(L, 4);
+				System.Collections.IEnumerator o = obj.Initialize(arg0, arg1, arg2);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: GameModPackage.Initialize");
+			}
 		}
 		catch (Exception e)
 		{
@@ -117,7 +145,7 @@ public class GameModPackageWrap
 			UnityEngine.AssetBundle arg1 = null;
 			bool o = obj.HasResPack(arg0, out arg1);
 			LuaDLL.lua_pushboolean(L, o);
-			ToLua.PushSealed(L, arg1);
+			ToLua.Push(L, arg1);
 			return 2;
 		}
 		catch (Exception e)
@@ -144,14 +172,14 @@ public class GameModPackageWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int LoadModResPack(IntPtr L)
+	static int LoadModResPackInZip(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 2);
 			GameModPackage obj = (GameModPackage)ToLua.CheckObject<GameModPackage>(L, 1);
 			string arg0 = ToLua.CheckString(L, 2);
-			bool o = obj.LoadModResPack(arg0);
+			bool o = obj.LoadModResPackInZip(arg0);
 			LuaDLL.lua_pushboolean(L, o);
 			return 1;
 		}
@@ -329,6 +357,25 @@ public class GameModPackageWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_VisitCount(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			GameModPackage obj = (GameModPackage)o;
+			int ret = obj.VisitCount;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index VisitCount on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_AssetBundlePath(IntPtr L)
 	{
 		object o = null;
@@ -357,7 +404,7 @@ public class GameModPackageWrap
 			o = ToLua.ToObject(L, 1);
 			GameModPackage obj = (GameModPackage)o;
 			UnityEngine.AssetBundle ret = obj.BaseAssetPack;
-			ToLua.PushSealed(L, ret);
+			ToLua.Push(L, ret);
 			return 1;
 		}
 		catch(Exception e)
@@ -443,7 +490,7 @@ public class GameModPackageWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_InitnaizeDsbFile(IntPtr L)
+	static int get_InitnaizeDefFile(IntPtr L)
 	{
 		object o = null;
 
@@ -451,13 +498,13 @@ public class GameModPackageWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			GameModPackage obj = (GameModPackage)o;
-			Helper.BFSReader ret = obj.InitnaizeDsbFile;
+			Helper.BFSReader ret = obj.InitnaizeDefFile;
 			ToLua.PushObject(L, ret);
 			return 1;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index InitnaizeDsbFile on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index InitnaizeDefFile on a nil value");
 		}
 	}
 
@@ -477,6 +524,25 @@ public class GameModPackageWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index DefaultAssetFindType on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_VisitCount(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			GameModPackage obj = (GameModPackage)o;
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.VisitCount = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index VisitCount on a nil value");
 		}
 	}
 }

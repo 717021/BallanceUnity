@@ -1,4 +1,5 @@
 ﻿using Helper;
+using LuaInterface;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,10 +10,17 @@ using UnityEditor;
 #endif
 using UnityEngine;
 
+/*
+ * 游戏主加载器、建造器
+ * 负责对整个游戏进行初始化
+ * 
+ */
+
+/// <summary>
+/// 游戏主建造器
+/// </summary>
 public class GameBulider : MonoBehaviour, IGameBasePart
 {
-    public static GameBulider GameBuliderStatic = null;
-
     public GameObject perfabCube;
     public GameObject perfabEmepty;
 
@@ -23,9 +31,13 @@ public class GameBulider : MonoBehaviour, IGameBasePart
     private LuaEngine luaEngine;
 
     /// <summary>
+    /// 静态实例
+    /// </summary>
+    public static GameBulider GameBuliderInstance { get; private set; }
+    /// <summary>
     /// 全局 Lua 虚拟机
     /// </summary>
-    public LuaInterface.LuaState GlobalLuaState { get { return LuaEngine.globalLuaState; } }
+    public LuaState GlobalLuaState { get { return LuaEngine.globalLuaState; } }
     public GameObject LevelHost { get { return levelHost; } }
     /// <summary>
     /// 指令管理器实例
@@ -67,11 +79,10 @@ public class GameBulider : MonoBehaviour, IGameBasePart
     //全局加载入口
     private void Start()
     {
-        GameBuliderStatic = this;
+        GameBuliderInstance = this;
 
         InitGlobalUI();
         InitGlobal();
-        InitLoader();
     }
 
     private void InitGlobalUI()
@@ -84,13 +95,14 @@ public class GameBulider : MonoBehaviour, IGameBasePart
     }
     private void InitGlobal()
     {
-        GameMgr.Log("InitGlobal");
+        GameMgr.Log("Initializing Game...");
 
         GameObject mainmgr = Instantiate(perfabEmepty);
         mainmgr.name = "GameMgr";
         GameMgr = mainmgr.AddComponent<GameMgr>();
         GameMgr.GameBulider = this;
         luaEngine = mainmgr.AddComponent<LuaEngine>();
+        luaEngine.InitThis();
 
         GameObject mainloader = Instantiate(perfabEmepty);
         mainloader.name = "GameModLoader";
@@ -100,66 +112,88 @@ public class GameBulider : MonoBehaviour, IGameBasePart
         levelHost = Instantiate(perfabEmepty);
         levelHost.name = "GameLevelObjects";
 
-
-    }
-    private void InitLoader()
-    {
-        GameMgr.Log("InitLoader");
-
         StartCoroutine(InitGame());
     }
 
     private IEnumerator InitGame()
     {
+        string errmsg = "";
         //加载Gameinit mod
         string gameinit_path = GamePathManager.GetResRealPath("core", "gameinit.assetbundle");
         yield return StartCoroutine(GameModLoader.LoadMod(gameinit_path, false, ""));
 
         //运行Gameinit mod中的gameinit.lua进行加载程序
         GameModPackage gameinitModPackage = null;
-        if (GameModLoader.FindLadedMod(gameinit_path, out gameinitModPackage))
+        if (!GameModLoader.FindLadedMod(gameinit_path, out gameinitModPackage))
+        { GameMgr.LogErr("Init {0} Failed.", gameinit_path); errmsg = "加载主元件 " + gameinit_path + " 失败"; goto ERRANDEXIT; }
+
+        TextAsset lua = GameModPackageAssetMgr.GetPackageTextAsset(gameinitModPackage, "GameInit.lua");
+        if (lua == null) { GameMgr.LogErr("Init gameinit.lua failed."); errmsg = "无效的主元件 GameInit"; goto ERRANDEXIT; }
+
+        //gameinit.lua装入运行
+        //GlobalLuaState.LuaLoadBuffer(lua.bytes, lua.bytes.Length, "GameInit");
+        GlobalLuaState.DoString(lua.text, "GameInit");
+        GlobalLuaState.CheckTop();
+
+        LuaFunction gameinit_entery = GlobalLuaState.GetFunction("GameInit_Entry");
+        LuaFunction gameinit_geterr = GlobalLuaState.GetFunction("GameInit_GetLoaderError");
+
+        if(gameinit_entery == null || gameinit_geterr == null)
         {
-            TextAsset lua = GameModPackageAssetMgr.GetPackageTextAsset(gameinitModPackage, "GameInit.lua");
-            if (lua != null)
+            GameMgr.LogErr("gameinit.lua have been damaged.");
+            errmsg = "无效的主元件 GameInit"; goto ERRANDEXIT;
+        }
+
+        try
+        {
+            //调用lua文件中的人口
+            gameinit_entery.Call();
+            if (!gameinit_entery.CheckBoolean()) //获取返回值
             {
-                GlobalLuaState.LuaLoadBuffer(lua.bytes, lua.bytes.Length, "GameInit");//gameinit.lua装入运行
+                gameinit_entery.Call();//获取错误返回值
+                errmsg = new String(gameinit_entery.CheckCharBuffer());
+                goto ERRANDEXIT;
             }
         }
-        else
+        catch (LuaException e)
         {
-            UIManager.ShowDialog(0, "游戏初始化失败", "GameInit 加载失败\n路径：" + gameinit_path, "退出游戏", "");
-            yield return new WaitUntil(UIManager.IsDialogClosed);
-            ExitGame();//加载失败退出
-            yield break;
+            errmsg = "执行 gameinit.lua 失败\n" + e.Message;
+            GameMgr.LogErr(e.ToString());
+            goto ERRANDEXIT;
         }
+
+        goto CONLOAD;
+        ERRANDEXIT:
+        UIManager.ShowDialog(0, "游戏初始化失败", "请尝试重新安装游戏\n错误信息：" + errmsg, "退出游戏", "");
+        yield return new WaitUntil(UIManager.IsDialogClosed);
+        ExitGame();//加载失败退出
+        CONLOAD:
+        yield break;
     }
 
     //==============================
 
-    /// <summary>
-    /// 唯一退出游戏方法。调用此函数游戏方法。
-    /// </summary>
-    public void ExitGame()
+    internal void ExitGame()
     {
         if (GameMgr.GameExiting)
         {
             ExitGameClear();
-            GameMgr.ExitGameClear();
-            GameModLoader.ExitGameClear();
-            luaEngine.ExitGameClear();
-
 #if UNITY_EDITOR
             EditorApplication.isPlaying = false;
 #else
             Application.Quit();
 #endif
-
         }
     }
 
     public void ExitGameClear()
     {
-        
+        if (GameMgr.GameExiting)
+        {
+            GameMgr.ExitGameClear();
+            GameModLoader.ExitGameClear();
+            luaEngine.ExitGameClear();
+        }
     }
 }
 

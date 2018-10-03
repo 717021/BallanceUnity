@@ -282,18 +282,18 @@ public class UnityEngine_TransformWrap
 				obj.LookAt(arg0);
 				return 0;
 			}
-			else if (count == 3 && TypeChecker.CheckTypes<UnityEngine.Vector3, UnityEngine.Vector3>(L, 2))
-			{
-				UnityEngine.Transform obj = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 1);
-				UnityEngine.Vector3 arg0 = ToLua.ToVector3(L, 2);
-				UnityEngine.Vector3 arg1 = ToLua.ToVector3(L, 3);
-				obj.LookAt(arg0, arg1);
-				return 0;
-			}
 			else if (count == 3 && TypeChecker.CheckTypes<UnityEngine.Transform, UnityEngine.Vector3>(L, 2))
 			{
 				UnityEngine.Transform obj = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 1);
 				UnityEngine.Transform arg0 = (UnityEngine.Transform)ToLua.ToObject(L, 2);
+				UnityEngine.Vector3 arg1 = ToLua.ToVector3(L, 3);
+				obj.LookAt(arg0, arg1);
+				return 0;
+			}
+			else if (count == 3 && TypeChecker.CheckTypes<UnityEngine.Vector3, UnityEngine.Vector3>(L, 2))
+			{
+				UnityEngine.Transform obj = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 1);
+				UnityEngine.Vector3 arg0 = ToLua.ToVector3(L, 2);
 				UnityEngine.Vector3 arg1 = ToLua.ToVector3(L, 3);
 				obj.LookAt(arg0, arg1);
 				return 0;

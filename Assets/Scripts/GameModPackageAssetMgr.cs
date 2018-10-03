@@ -2,14 +2,23 @@
 using System.IO;
 using UnityEngine;
 
+/*
+ * 模组资源、代码管理器类
+ * 
+ * 2018.10.3
+ */
+
+/// <summary>
+/// 模组资源、代码管理器类
+/// </summary>
 public static class GameModPackageAssetMgr
 {
     /// <summary>
-    /// 使用资源中的Perfab初始化GameObject
+    /// 使用资源中的 Perfab 初始化一个新的 GameObject
     /// </summary>
-    /// <param name="package">mod包</param>
-    /// <param name="path">资源路径 (路径&lt;GameObject名字)</param>
-    /// <param name="name">GameObject名字</param>
+    /// <param name="package">MOD 包</param>
+    /// <param name="path">资源路径 (资源路径&lt;GameObject名字)</param>
+    /// <param name="name">指定新建的 GameObject 的名字</param>
     /// <returns></returns>
     public static GameObject InitObjWithPackageAsset(GameModPackage package, string path, string name = "")
     {
@@ -31,10 +40,10 @@ public static class GameModPackageAssetMgr
         else return null;
     }
     /// <summary>
-    ///  使用Perfab资源初始化GameObject
+    ///  使用 Perfab 初始化一个新的 GameObject
     /// </summary>
-    /// <param name="perfab">Perfab资源</param>
-    /// <param name="name">GameObject名字</param>
+    /// <param name="perfab"> Perfab 资源</param>
+    /// <param name="name">指定新建的 GameObject 的名字</param>
     /// <returns></returns>
     public static GameObject InitObjWithPerfab(GameObject perfab, string name = "")
     {
@@ -47,7 +56,11 @@ public static class GameModPackageAssetMgr
     /// 添加一个lua脚本至GameObject
     /// </summary>
     /// <param name="package">mod包</param>
-    /// <param name="path">路径 (USEAB/USEZIP:PATH)</param>
+    /// <param name="path">路径 ([(USEAB/USEZIP):][abpackName:]PATH) 
+    /// 比如：USEAB:testscript.lua（使用默认ab包中的testscript.lua代码）
+    /// USEAB:package1:testscript.lua（使用名为package1的ab包中的testscript.lua代码）
+    /// 而：USEZIP:testscript.lua（则使用默认zip包中的testscript.lua代码）
+    /// </param>
     /// <param name="target">目标GameObject</param>
     /// <returns></returns>
     public static LuaComponent GetPackageCodeAndAttatchLUA(GameModPackage package, string path, GameObject target)
@@ -63,6 +76,7 @@ public static class GameModPackageAssetMgr
         if (rs.LuaState == null) rs.LuaState = package.LuaState;
 
         string name = path;
+        string targetAbName = "";
         bool inab = package.DefaultAssetFindType == GameModPackage.GameModPackageAssetFindType.UseAssetBundle;
         if (path.Contains(":"))
         {
@@ -73,15 +87,36 @@ public static class GameModPackageAssetMgr
                     inab = true;
                 else if (ss[0] == "USEZIP")
                     inab = false;
+                else GameMgr.LogWarn("[GetPackageCodeAndAttatchLUA] Bad resource pararm : {0}", ss[0]);
 
                 name = ss[1];
             }
+            else if (ss.Length == 3)
+            {
+                if (ss[0] == "USEAB")
+                {
+                    inab = true;
+                    targetAbName = ss[1];
+                    name = ss[2];
+                }
+                else GameMgr.LogWarn("[GetPackageCodeAndAttatchLUA] Only USEAB pararm can use 3 pararm.");
+            }
+            else GameMgr.LogWarn("[GetPackageCodeAndAttatchLUA] Bad resource pararm : " + name);
         }
         if (inab)
         {
-            if (package.BaseAssetPack != null)
+            AssetBundle targetAb = package.BaseAssetPack;
+            if (targetAbName != "")
             {
-                TextAsset ta = package.BaseAssetPack.LoadAsset<TextAsset>(name);
+                if (!package.HasResPack(targetAbName, out targetAb))
+                {
+                    GameMgr.LogWarn("[GetPackageCode] Get package resource (AssetBundle) {0} failed in package : {1} . \nUse default AssetBundle", targetAbName, package.Name);
+                    targetAb = package.BaseAssetPack;
+                }
+            }
+            if (targetAb != null)
+            {
+                TextAsset ta = targetAb.LoadAsset<TextAsset>(name);
                 if (ta != null)
                 {
                     rs.LuaScriptAssetPath = name;
@@ -89,36 +124,22 @@ public static class GameModPackageAssetMgr
                 }
                 else
                 {
-                    GameMgr.LogErr("The package {0} failed in loading {1} in AssetBundle : {2} .", package.AssetBundlePath, name, package.AssetBundlePath);
+                    GameMgr.LogErr("[GetPackageCode] Load TextAsset {0} failed in AssetBundle : {2} .", name, targetAb.name);
                     goto RETURN;
                 }
             }
             else
             {
-                GameMgr.LogErr("The package {0} not load any AssetBundle but you try to use AssetBundle code assets.", package.AssetBundlePath);
+                GameMgr.LogErr("[GetPackageCode] The package {0} not load any AssetBundle but you try to use AssetBundle code assets.", package.Name);
                 goto RETURN;
             }
         }
         else if (package.IsZip)
         {
-            if (inab && package.BaseAssetPack != null)
-            {
-                TextAsset ta = package.BaseAssetPack.LoadAsset<TextAsset>(name);
-                if (ta != null)
-                {
-                    rs.LuaScriptAssetPath = name;
-                    rs.Initilize(ta);
-                }
-                else
-                {
-                    GameMgr.LogErr("The package {0} failed in loading {1} in AssetBundle : {2} .", package.AssetBundlePath, name, package.AssetBundlePath);
-                    goto RETURN;
-                }
-            }
-            else if (package.ZipFile != null)
+            if (package.ZipFile != null)
             {
                 MemoryStream memoryStream = new MemoryStream();
-                if(package.ZipFile.GetFile(name, memoryStream))
+                if (package.ZipFile.GetFile(name, memoryStream))
                 {
                     byte[] b = memoryStream.ToArray();
                     string s = System.Text.Encoding.UTF8.GetString(b, 0, b.Length);
@@ -134,7 +155,7 @@ public static class GameModPackageAssetMgr
                 }
                 else
                 {
-                    GameMgr.LogErr("The package {0} failed in loading {1} in zip. Error : {2} .", package.AssetBundlePath, name, package.ZipFile.LastError);
+                    GameMgr.LogErr("[GetPackageCode] The package {0} failed in loading {1} in zip. Error : {2} .", package.Name, name, package.ZipFile.LastError);
                     goto RETURN;
                 }
             }
@@ -143,7 +164,7 @@ public static class GameModPackageAssetMgr
         else goto ERRNOZIP;
         goto CONLOAD;
         ERRNOZIP:
-        GameMgr.LogErr("The package {0} not load any zip pack but you try to use zip code assets.", package.AssetBundlePath);
+        GameMgr.LogErr("[GetPackageCode] The package {0} not load any zip pack but you try to use zip code assets.", package.Name);
         goto RETURN;
         CONLOAD:
         RETURN:
@@ -176,41 +197,62 @@ public static class GameModPackageAssetMgr
     /// <summary>
     /// 获取 TextAsset
     /// </summary>
-    /// <param name="package">mod包</param>
-    /// <param name="path">资源路径</param>
+    /// <param name="package">MOD 包</param>
+    /// <param name="path">资源路径 或者 资源所在Ab包名称:资源路径</param>
     /// <returns></returns>
     public static TextAsset GetPackageTextAsset(GameModPackage package, string path)
     {
-        TextAsset textAsset = null;
-        if (package.BaseAssetPack != null)
-        {
-            textAsset = package.BaseAssetPack.LoadAsset<TextAsset>(path);
-            if (textAsset == null) GameMgr.LogWarn("package : {0} assetbundle does not contain perfab : {1}.", package.Name, path);
-        }
-        else GameMgr.LogWarn("package : {0} not contain assetbundle.", package.Name);
-        return textAsset;
+        return GetPackageResource<TextAsset>(package, path);
     }
     /// <summary>
     /// 获取Perfab
     /// </summary>
-    /// <param name="package">mod包</param>
-    /// <param name="path">资源路径</param>
+    /// <param name="package">资源所在 MOD 包</param>
+    /// <param name="path">资源路径 或者 资源所在Ab包名称:资源路径</param>
     /// <returns></returns>
     public static GameObject GetPackagePerfab(GameModPackage package, string path)
     {
-        GameObject perfab = null;
-        if (package.BaseAssetPack != null)
-        {
-            perfab = package.BaseAssetPack.LoadAsset<GameObject>(path);
-            if (perfab == null) GameMgr.LogWarn("package : {0} assetbundle does not contain perfab : {1}.", package.Name, path);
-        }
-        else GameMgr.LogWarn("package : {0} not contain assetbundle.", package.Name);
-        return perfab;
+        return GetPackageResource<GameObject>(package, path);
     }
-
-    public static string[] ResolveAssetPath(string s)
+    /// <summary>
+    /// 加载 MOD 包中的资源
+    /// </summary>
+    /// <typeparam name="T">继承于  并由 Unity 支持的 AssetBundle 资源类型</typeparam>
+    /// <param name="package">资源所在 MOD 包</param>
+    /// <param name="path">资源路径 或者 资源所在Ab包名称:资源路径</param>
+    /// <returns></returns>
+    public static T GetPackageResource<T>(GameModPackage package, string path) where T : UnityEngine.Object
     {
+        string name = path;
+        string targetAbName = "";
+        if (path.Contains(":"))
+        {
+            string[] ss = path.Split(',');
+            if (ss.Length == 2)
+            {
+                targetAbName = ss[0];
+                name = ss[1];
+            }
+        }
 
-        return null;
+        AssetBundle targetAb = package.BaseAssetPack;
+        if (targetAbName != "")
+        {
+            if (!package.HasResPack(targetAbName, out targetAb))
+            {
+                GameMgr.LogWarn("[GetPackageResource] Get package resource {0} failed in package : {1} .Not found package. \nUse default AssetBundle", targetAbName, package.Name);
+                targetAb = package.BaseAssetPack;
+            }
+        }
+        else targetAbName = package.Name;
+
+        if (targetAb != null)
+        {
+            T ta = targetAb.LoadAsset<T>(name);
+            if (ta != null) return ta;
+            else GameMgr.LogErr("[GetPackageResource] Load resource {0} (T is {1}) failed in AssetBundle : {2} \nPath : {3}.", name, typeof(T).Name, targetAbName, path);
+        }
+        else GameMgr.LogWarn("[GetPackageResource] package : {0} not contain assetbundle.", package.Name);
+        return default(T);
     }
 }

@@ -1,0 +1,10 @@
+function GameInit_Entry()
+  loader_err = ""
+  GameMgr.Log("Gameinit test")
+  GameMgr.Log("Game version : {0} Bulid version : ", GameConst.GameVersion, GameConst.GameBulidVersion)
+  GameMgr.Log("Gameinit end")
+  return true
+end
+function GameInit_GetLoaderError()
+  return loader_err
+end

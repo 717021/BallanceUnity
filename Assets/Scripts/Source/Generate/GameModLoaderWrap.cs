@@ -10,7 +10,7 @@ public class GameModLoaderWrap
 		L.RegFunction("FindLadedMod", FindLadedMod);
 		L.RegFunction("IsModLaded", IsModLaded);
 		L.RegFunction("LoadMod", LoadMod);
-		L.RegFunction("LoadResInMod", LoadResInMod);
+		L.RegFunction("LoadModResPackInZip", LoadModResPackInZip);
 		L.RegFunction("UnLoadResInMod", UnLoadResInMod);
 		L.RegFunction("LoadResToMod", LoadResToMod);
 		L.RegFunction("UnLoadMod", UnLoadMod);
@@ -100,7 +100,7 @@ public class GameModLoaderWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int LoadResInMod(IntPtr L)
+	static int LoadModResPackInZip(IntPtr L)
 	{
 		try
 		{
@@ -108,7 +108,7 @@ public class GameModLoaderWrap
 			GameModLoader obj = (GameModLoader)ToLua.CheckObject<GameModLoader>(L, 1);
 			GameModPackage arg0 = (GameModPackage)ToLua.CheckObject<GameModPackage>(L, 2);
 			string arg1 = ToLua.CheckString(L, 3);
-			bool o = obj.LoadResInMod(arg0, arg1);
+			bool o = obj.LoadModResPackInZip(arg0, arg1);
 			LuaDLL.lua_pushboolean(L, o);
 			return 1;
 		}

@@ -13,9 +13,11 @@ public class Helper_BFSReaderWrap
 		L.RegFunction("GetPropertyValueChildValue", GetPropertyValueChildValue);
 		L.RegFunction("GetPropertyValueChildValue2", GetPropertyValueChildValue2);
 		L.RegFunction("GetLineAllItems", GetLineAllItems);
+		L.RegFunction("GetBlockAllItems", GetBlockAllItems);
 		L.RegFunction("New", _CreateHelper_BFSReader);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("Props", get_Props, null);
+		L.RegVar("Blocks", get_Blocks, null);
 		L.EndClass();
 	}
 
@@ -163,6 +165,24 @@ public class Helper_BFSReaderWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetBlockAllItems(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			Helper.BFSReader obj = (Helper.BFSReader)ToLua.CheckObject<Helper.BFSReader>(L, 1);
+			string arg0 = ToLua.CheckString(L, 2);
+			string[] o = obj.GetBlockAllItems(arg0);
+			ToLua.Push(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_Props(IntPtr L)
 	{
 		object o = null;
@@ -178,6 +198,25 @@ public class Helper_BFSReaderWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index Props on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_Blocks(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			Helper.BFSReader obj = (Helper.BFSReader)o;
+			System.Collections.Generic.Dictionary<string,System.Collections.Generic.List<string>> ret = obj.Blocks;
+			ToLua.PushSealed(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index Blocks on a nil value");
 		}
 	}
 }

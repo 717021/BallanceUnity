@@ -7,7 +7,7 @@ public class GlobalUI_UIElements_UITextWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(GlobalUI.UIElements.UIText), typeof(GlobalUI.UIElement));
-		L.RegFunction("Oninit", Oninit);
+		L.RegFunction("OnInit", OnInit);
 		L.RegFunction("StartSet", StartSet);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
@@ -16,13 +16,13 @@ public class GlobalUI_UIElements_UITextWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Oninit(IntPtr L)
+	static int OnInit(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 1);
 			GlobalUI.UIElements.UIText obj = (GlobalUI.UIElements.UIText)ToLua.CheckObject<GlobalUI.UIElements.UIText>(L, 1);
-			obj.Oninit();
+			obj.OnInit();
 			return 0;
 		}
 		catch (Exception e)

@@ -23,6 +23,7 @@ public class GameCommandManagerWrap
 		L.RegFunction("SetCurrentCommandResult", SetCurrentCommandResult);
 		L.RegFunction("NoDebug", NoDebug);
 		L.RegFunction("CanDebug", CanDebug);
+		L.RegFunction("ExitGameClear", ExitGameClear);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("DisplayInfoUi", get_DisplayInfoUi, set_DisplayInfoUi);
@@ -32,13 +33,17 @@ public class GameCommandManagerWrap
 		L.RegVar("textLinesLayoutElement", get_textLinesLayoutElement, set_textLinesLayoutElement);
 		L.RegVar("panelCommand", get_panelCommand, set_panelCommand);
 		L.RegVar("textShowCmd", get_textShowCmd, set_textShowCmd);
+		L.RegVar("displayRunInfo", get_displayRunInfo, set_displayRunInfo);
 		L.RegVar("textLines", get_textLines, set_textLines);
 		L.RegVar("textTips", get_textTips, set_textTips);
 		L.RegVar("inputCommand", get_inputCommand, set_inputCommand);
 		L.RegVar("dragCommand", get_dragCommand, set_dragCommand);
+		L.RegVar("cmdlinesDUIRayIgnore", get_cmdlinesDUIRayIgnore, set_cmdlinesDUIRayIgnore);
+		L.RegVar("cmdlinesScrollRect", get_cmdlinesScrollRect, set_cmdlinesScrollRect);
+		L.RegVar("textLinesDUIRayIgnore", get_textLinesDUIRayIgnore, set_textLinesDUIRayIgnore);
 		L.RegVar("Instance", get_Instance, null);
 		L.RegVar("CommandShow", get_CommandShow, set_CommandShow);
-		L.RegVar("CommandShowPos", get_CommandShowPos, set_CommandShowPos);
+		L.RegVar("GameBulider", get_GameBulider, set_GameBulider);
 		L.RegFunction("CommandReceiverHandler", GameCommandManager_CommandReceiverHandler);
 		L.EndClass();
 	}
@@ -412,6 +417,21 @@ public class GameCommandManagerWrap
 		}
 	}
 
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int ExitGameClear(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			GameCommandManager obj = (GameCommandManager)ToLua.CheckObject<GameCommandManager>(L, 1);
+			obj.ExitGameClear();
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int op_Equality(IntPtr L)
@@ -565,6 +585,25 @@ public class GameCommandManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_displayRunInfo(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			GameCommandManager obj = (GameCommandManager)o;
+			UnityEngine.GameObject ret = obj.displayRunInfo;
+			ToLua.PushSealed(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index displayRunInfo on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_textLines(IntPtr L)
 	{
 		object o = null;
@@ -641,6 +680,63 @@ public class GameCommandManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_cmdlinesDUIRayIgnore(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			GameCommandManager obj = (GameCommandManager)o;
+			DUIRayIgnore ret = obj.cmdlinesDUIRayIgnore;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index cmdlinesDUIRayIgnore on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_cmdlinesScrollRect(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			GameCommandManager obj = (GameCommandManager)o;
+			UnityEngine.UI.ScrollRect ret = obj.cmdlinesScrollRect;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index cmdlinesScrollRect on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_textLinesDUIRayIgnore(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			GameCommandManager obj = (GameCommandManager)o;
+			DUIRayIgnore ret = obj.textLinesDUIRayIgnore;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index textLinesDUIRayIgnore on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_Instance(IntPtr L)
 	{
 		try
@@ -674,7 +770,7 @@ public class GameCommandManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_CommandShowPos(IntPtr L)
+	static int get_GameBulider(IntPtr L)
 	{
 		object o = null;
 
@@ -682,13 +778,13 @@ public class GameCommandManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			GameCommandManager obj = (GameCommandManager)o;
-			int ret = obj.CommandShowPos;
-			LuaDLL.lua_pushinteger(L, ret);
+			GameBulider ret = obj.GameBulider;
+			ToLua.Push(L, ret);
 			return 1;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index CommandShowPos on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index GameBulider on a nil value");
 		}
 	}
 
@@ -826,6 +922,25 @@ public class GameCommandManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_displayRunInfo(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			GameCommandManager obj = (GameCommandManager)o;
+			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 2, typeof(UnityEngine.GameObject));
+			obj.displayRunInfo = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index displayRunInfo on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_textLines(IntPtr L)
 	{
 		object o = null;
@@ -902,6 +1017,63 @@ public class GameCommandManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_cmdlinesDUIRayIgnore(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			GameCommandManager obj = (GameCommandManager)o;
+			DUIRayIgnore arg0 = (DUIRayIgnore)ToLua.CheckObject<DUIRayIgnore>(L, 2);
+			obj.cmdlinesDUIRayIgnore = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index cmdlinesDUIRayIgnore on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_cmdlinesScrollRect(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			GameCommandManager obj = (GameCommandManager)o;
+			UnityEngine.UI.ScrollRect arg0 = (UnityEngine.UI.ScrollRect)ToLua.CheckObject<UnityEngine.UI.ScrollRect>(L, 2);
+			obj.cmdlinesScrollRect = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index cmdlinesScrollRect on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_textLinesDUIRayIgnore(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			GameCommandManager obj = (GameCommandManager)o;
+			DUIRayIgnore arg0 = (DUIRayIgnore)ToLua.CheckObject<DUIRayIgnore>(L, 2);
+			obj.textLinesDUIRayIgnore = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index textLinesDUIRayIgnore on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_CommandShow(IntPtr L)
 	{
 		object o = null;
@@ -921,7 +1093,7 @@ public class GameCommandManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_CommandShowPos(IntPtr L)
+	static int set_GameBulider(IntPtr L)
 	{
 		object o = null;
 
@@ -929,13 +1101,13 @@ public class GameCommandManagerWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			GameCommandManager obj = (GameCommandManager)o;
-			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-			obj.CommandShowPos = arg0;
+			GameBulider arg0 = (GameBulider)ToLua.CheckObject<GameBulider>(L, 2);
+			obj.GameBulider = arg0;
 			return 0;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index CommandShowPos on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index GameBulider on a nil value");
 		}
 	}
 

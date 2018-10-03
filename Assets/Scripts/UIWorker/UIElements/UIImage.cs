@@ -3,11 +3,14 @@ using UnityEngine.UI;
 
 namespace GlobalUI.UIElements
 {
+    /// <summary>
+    /// UI 图片
+    /// </summary>
     public class UIImage : UIElement
     {
-        public override void Oninit()
+        public override void OnInit()
         {
-            base.Oninit();
+            base.OnInit();
             image = gameObject.GetComponent<Image>();
         }
         private Image image;

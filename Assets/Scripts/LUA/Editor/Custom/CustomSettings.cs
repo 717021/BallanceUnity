@@ -5,12 +5,6 @@ using LuaInterface;
 using UnityEditor;
 
 using BindType = ToLuaMenu.BindType;
-using System.Reflection;
-using GlobalUI;
-using GlobalUI.UIElements;
-using GlobalUI.LayoutUI;
-using Caller;
-using Helper;
 
 public static class CustomSettings
 {
@@ -37,10 +31,12 @@ public static class CustomSettings
         typeof(UnityEngine.Graphics),
         #endregion
 
+        typeof(Helper.GamePathManager),
         typeof(GameModPackageAssetMgr),
         typeof(GameSettings),
-        typeof(GameStaticValues),
-        typeof(GamePathManager),
+        typeof(GameConst),
+
+        typeof(GameBulider),
     };
 
     //附加导出委托类型(在导出委托时, customTypeList 中牵扯的委托类型都会导出， 无需写在这里)
@@ -175,38 +171,41 @@ public static class CustomSettings
         _GT(typeof(GameUIMgr)),
         _GT(typeof(GameMgr)),
         _GT(typeof(GameBulider)),
-        _GT(typeof(GameStaticValues)),
+        _GT(typeof(GameConst)),
 
-        _GT(typeof(EventLinster)),
-        _GT(typeof(BFSReader)),
-        _GT(typeof(KeyListener)),
+        //hilps
+        _GT(typeof(Caller.EventLinster)),
+        _GT(typeof(Helper.BFSReader)),
+        _GT(typeof(Helper.KeyListener)),
 
-        _GT(typeof(StringSpliter)),
-        _GT(typeof(ZipFileReader)),
+        _GT(typeof(Helper.StringSpliter)),
+        _GT(typeof(Helper.ZipFileReader)),
 
-        _GT(typeof(UIDropDown)),
-        _GT(typeof(UIImage)),
-        _GT(typeof(UIMulitButton)),
-        _GT(typeof(UISlider)),
-        _GT(typeof(UIText)),
-        _GT(typeof(UIToggle)),
-        _GT(typeof(UIButton)),
-        _GT(typeof(UIVerticalLayoutMenu)),
-        _GT(typeof(EventTriggerListener)),
-        _GT(typeof(FadeHlper)),
-        _GT(typeof(UIAutoLayoutMenu)),
-        _GT(typeof(UIBallanceClassicalMenu)),
-        _GT(typeof(UIElement)),
-        _GT(typeof(UIMenu)),
-        _GT(typeof(UIPage)),
+        //ui
+        _GT(typeof(GlobalUI.UIElements.UIDropDown)),
+        _GT(typeof(GlobalUI.UIElements.UIImage)),
+        _GT(typeof(GlobalUI.UIElements.UIMulitButton)),
+        _GT(typeof(GlobalUI.UIElements.UISlider)),
+        _GT(typeof(GlobalUI.UIElements.UIText)),
+        _GT(typeof(GlobalUI.UIElements.UIToggle)),
+        _GT(typeof(GlobalUI.UIElements.UIButton)),
+        _GT(typeof(GlobalUI.LayoutUI.UIVerticalLayoutMenu)),
+        _GT(typeof(GlobalUI.LayoutUI.UIAutoLayoutMenu)),
+        _GT(typeof(Helper.EventTriggerListener)),
+        _GT(typeof(Helper.FadeHlper)),
+        _GT(typeof(GlobalUI.UIBallanceClassicalMenu)),
+        _GT(typeof(GlobalUI.UIElement)),
+        _GT(typeof(GlobalUI.UIMenu)),
+        _GT(typeof(GlobalUI.UIPage)),
         _GT(typeof(GameUIMgr.StandardUIMaker)),
-        _GT(typeof(GamePathManager)),
+        _GT(typeof(Helper.GamePathManager)),
         
     };
 
     public static List<Type> dynamicList = new List<Type>()
     {
-#region NOTMINE
+
+        #region NOTMINE
         typeof(MeshRenderer),
 #if !UNITY_5_4_OR_NEWER
         typeof(ParticleEmitter),
@@ -227,9 +226,9 @@ public static class CustomSettings
         typeof(BlendWeights),
         typeof(RenderTexture),
         typeof(Rigidbody),
-#endregion
+        #endregion
 
-        typeof(EventLinster),
+        typeof(Caller.EventLinster),
         typeof(GameModPackage),
         typeof(GameModLoader),
         typeof(GameUIMgr),
@@ -237,25 +236,25 @@ public static class CustomSettings
         typeof(GameBulider),
         typeof(GameCommandManager),
 
-        typeof(BFSReader),
-        typeof(KeyListener),
-        typeof(ZipFileReader),
+        typeof(Helper.BFSReader),
+        typeof(Helper.KeyListener),
+        typeof(Helper.ZipFileReader),
 
-        typeof(UIDropDown),
-        typeof(UIImage),
-        typeof(UIMulitButton),
-        typeof(UISlider),
-        typeof(UIText),
-        typeof(UIToggle),
-        typeof(UIButton),
-        typeof(UIVerticalLayoutMenu),
-        typeof(EventTriggerListener),
-        typeof(FadeHlper),
-        typeof(UIAutoLayoutMenu),
-        typeof(UIBallanceClassicalMenu),
-        typeof(UIElement),
-        typeof(UIMenu),
-        typeof(UIPage),
+        typeof(GlobalUI.UIElements.UIDropDown),
+        typeof(GlobalUI.UIElements.UIImage),
+        typeof(GlobalUI.UIElements.UIMulitButton),
+        typeof(GlobalUI.UIElements.UISlider),
+        typeof(GlobalUI.UIElements.UIText),
+        typeof(GlobalUI.UIElements.UIToggle),
+        typeof(GlobalUI.UIElements.UIButton),
+        typeof(GlobalUI.LayoutUI.UIVerticalLayoutMenu),
+        typeof(GlobalUI.LayoutUI.UIAutoLayoutMenu),
+        typeof(Helper.EventTriggerListener),
+        typeof(Helper.FadeHlper),
+        typeof(GlobalUI.UIBallanceClassicalMenu),
+        typeof(GlobalUI.UIElement),
+        typeof(GlobalUI.UIMenu),
+        typeof(GlobalUI.UIPage),
 
         typeof(GameUIMgr.StandardUIMaker),
     };
@@ -312,12 +311,10 @@ public static class CustomSettings
     {
         return new BindType(t);
     }
-
     public static DelegateType _DT(Type t)
     {
         return new DelegateType(t);
     }    
-
 
     [MenuItem("Lua/Attach Profiler", false, 151)]
     static void AttachProfiler()

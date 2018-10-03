@@ -9,7 +9,7 @@ public class GlobalUI_UIElements_UIToggleWrap
 		L.BeginClass(typeof(GlobalUI.UIElements.UIToggle), typeof(GlobalUI.UIElement));
 		L.RegFunction("OnClick", OnClick);
 		L.RegFunction("StartSet", StartSet);
-		L.RegFunction("Oninit", Oninit);
+		L.RegFunction("OnInit", OnInit);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("isChecked", get_isChecked, set_isChecked);
@@ -53,13 +53,13 @@ public class GlobalUI_UIElements_UIToggleWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Oninit(IntPtr L)
+	static int OnInit(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 1);
 			GlobalUI.UIElements.UIToggle obj = (GlobalUI.UIElements.UIToggle)ToLua.CheckObject<GlobalUI.UIElements.UIToggle>(L, 1);
-			obj.Oninit();
+			obj.OnInit();
 			return 0;
 		}
 		catch (Exception e)

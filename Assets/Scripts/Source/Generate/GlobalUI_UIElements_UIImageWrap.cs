@@ -7,7 +7,7 @@ public class GlobalUI_UIElements_UIImageWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(GlobalUI.UIElements.UIImage), typeof(GlobalUI.UIElement));
-		L.RegFunction("Oninit", Oninit);
+		L.RegFunction("OnInit", OnInit);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("Image", get_Image, null);
@@ -16,13 +16,13 @@ public class GlobalUI_UIElements_UIImageWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Oninit(IntPtr L)
+	static int OnInit(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 1);
 			GlobalUI.UIElements.UIImage obj = (GlobalUI.UIElements.UIImage)ToLua.CheckObject<GlobalUI.UIElements.UIImage>(L, 1);
-			obj.Oninit();
+			obj.OnInit();
 			return 0;
 		}
 		catch (Exception e)

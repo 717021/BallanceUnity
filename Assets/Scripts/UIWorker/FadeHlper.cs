@@ -9,6 +9,9 @@ namespace Helper
      * 屏幕渐变控制脚本（渐渐变黑或渐渐变白）
      */
 
+    /// <summary>
+    /// 屏幕渐变控制脚本（渐渐变黑或渐渐变白）
+    /// </summary>
     public class FadeHlper : MonoBehaviour
     {
 

@@ -13,7 +13,7 @@ public static class LuaBinder
 		LuaProfilerWrap.Register(L);
 		GameModPackageAssetMgrWrap.Register(L);
 		GameSettingsWrap.Register(L);
-		GameStaticValuesWrap.Register(L);
+		GameConstWrap.Register(L);
 		L.BeginModule("LuaInterface");
 		LuaInterface_LuaInjectionStationWrap.Register(L);
 		LuaInterface_InjectTypeWrap.Register(L);
@@ -69,8 +69,8 @@ public static class LuaBinder
 		L.RegFunction("CameraCallback", UnityEngine_Camera_CameraCallback);
 		L.EndModule();
 		L.BeginModule("Application");
-		L.RegFunction("LowMemoryCallback", UnityEngine_Application_LowMemoryCallback);
 		L.RegFunction("AdvertisingIdentifierCallback", UnityEngine_Application_AdvertisingIdentifierCallback);
+		L.RegFunction("LowMemoryCallback", UnityEngine_Application_LowMemoryCallback);
 		L.RegFunction("LogCallback", UnityEngine_Application_LogCallback);
 		L.EndModule();
 		L.BeginModule("AudioClip");
@@ -82,6 +82,7 @@ public static class LuaBinder
 		L.EndModule();
 		L.BeginModule("Helper");
 		Helper_StringSpliterWrap.Register(L);
+		Helper_GamePathManagerWrap.Register(L);
 		L.BeginModule("KeyListener");
 		L.RegFunction("VoidDelegate", Helper_KeyListener_VoidDelegate);
 		L.EndModule();
@@ -100,6 +101,8 @@ public static class LuaBinder
 		L.EndModule();
 		L.BeginModule("LayoutUI");
 		L.EndModule();
+		L.EndModule();
+		L.BeginModule("GameUIMgr");
 		L.EndModule();
 		L.BeginModule("System");
 		L.RegFunction("Action", System_Action);
@@ -145,13 +148,14 @@ public static class LuaBinder
 		L.AddPreLoad("GlobalUI.UIElements.UIToggle", LuaOpen_GlobalUI_UIElements_UIToggle, typeof(GlobalUI.UIElements.UIToggle));
 		L.AddPreLoad("GlobalUI.UIElements.UIButton", LuaOpen_GlobalUI_UIElements_UIButton, typeof(GlobalUI.UIElements.UIButton));
 		L.AddPreLoad("GlobalUI.LayoutUI.UIVerticalLayoutMenu", LuaOpen_GlobalUI_LayoutUI_UIVerticalLayoutMenu, typeof(GlobalUI.LayoutUI.UIVerticalLayoutMenu));
+		L.AddPreLoad("GlobalUI.LayoutUI.UIAutoLayoutMenu", LuaOpen_GlobalUI_LayoutUI_UIAutoLayoutMenu, typeof(GlobalUI.LayoutUI.UIAutoLayoutMenu));
 		L.AddPreLoad("Helper.EventTriggerListener", LuaOpen_Helper_EventTriggerListener, typeof(Helper.EventTriggerListener));
 		L.AddPreLoad("Helper.FadeHlper", LuaOpen_Helper_FadeHlper, typeof(Helper.FadeHlper));
-		L.AddPreLoad("GlobalUI.UIAutoLayoutMenu", LuaOpen_GlobalUI_UIAutoLayoutMenu, typeof(GlobalUI.UIAutoLayoutMenu));
 		L.AddPreLoad("GlobalUI.UIBallanceClassicalMenu", LuaOpen_GlobalUI_UIBallanceClassicalMenu, typeof(GlobalUI.UIBallanceClassicalMenu));
 		L.AddPreLoad("GlobalUI.UIElement", LuaOpen_GlobalUI_UIElement, typeof(GlobalUI.UIElement));
 		L.AddPreLoad("GlobalUI.UIMenu", LuaOpen_GlobalUI_UIMenu, typeof(GlobalUI.UIMenu));
 		L.AddPreLoad("GlobalUI.UIPage", LuaOpen_GlobalUI_UIPage, typeof(GlobalUI.UIPage));
+		L.AddPreLoad("GameUIMgr.StandardUIMaker", LuaOpen_GameUIMgr_StandardUIMaker, typeof(GameUIMgr.StandardUIMaker));
 		L.EndPreLoad();
 		Debugger.Log("Register lua type cost time: {0}", Time.realtimeSinceStartup - t);
 	}
@@ -211,33 +215,6 @@ public static class LuaBinder
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int UnityEngine_Application_LowMemoryCallback(IntPtr L)
-	{
-		try
-		{
-			int count = LuaDLL.lua_gettop(L);
-			LuaFunction func = ToLua.CheckLuaFunction(L, 1);
-
-			if (count == 1)
-			{
-				Delegate arg1 = DelegateTraits<UnityEngine.Application.LowMemoryCallback>.Create(func);
-				ToLua.Push(L, arg1);
-			}
-			else
-			{
-				LuaTable self = ToLua.CheckLuaTable(L, 2);
-				Delegate arg1 = DelegateTraits<UnityEngine.Application.LowMemoryCallback>.Create(func, self);
-				ToLua.Push(L, arg1);
-			}
-			return 1;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int UnityEngine_Application_AdvertisingIdentifierCallback(IntPtr L)
 	{
 		try
@@ -254,6 +231,33 @@ public static class LuaBinder
 			{
 				LuaTable self = ToLua.CheckLuaTable(L, 2);
 				Delegate arg1 = DelegateTraits<UnityEngine.Application.AdvertisingIdentifierCallback>.Create(func, self);
+				ToLua.Push(L, arg1);
+			}
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int UnityEngine_Application_LowMemoryCallback(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+			LuaFunction func = ToLua.CheckLuaFunction(L, 1);
+
+			if (count == 1)
+			{
+				Delegate arg1 = DelegateTraits<UnityEngine.Application.LowMemoryCallback>.Create(func);
+				ToLua.Push(L, arg1);
+			}
+			else
+			{
+				LuaTable self = ToLua.CheckLuaTable(L, 2);
+				Delegate arg1 = DelegateTraits<UnityEngine.Application.LowMemoryCallback>.Create(func, self);
 				ToLua.Push(L, arg1);
 			}
 			return 1;
@@ -1210,6 +1214,24 @@ public static class LuaBinder
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int LuaOpen_GlobalUI_LayoutUI_UIAutoLayoutMenu(IntPtr L)
+	{
+		try
+		{
+			LuaState state = LuaState.Get(L);
+			state.BeginPreModule("GlobalUI.LayoutUI");
+			GlobalUI_LayoutUI_UIAutoLayoutMenuWrap.Register(state);
+			int reference = state.GetMetaReference(typeof(GlobalUI.LayoutUI.UIAutoLayoutMenu));
+			state.EndPreModule(L, reference);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int LuaOpen_Helper_EventTriggerListener(IntPtr L)
 	{
 		try
@@ -1236,24 +1258,6 @@ public static class LuaBinder
 			state.BeginPreModule("Helper");
 			Helper_FadeHlperWrap.Register(state);
 			int reference = state.GetMetaReference(typeof(Helper.FadeHlper));
-			state.EndPreModule(L, reference);
-			return 1;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int LuaOpen_GlobalUI_UIAutoLayoutMenu(IntPtr L)
-	{
-		try
-		{
-			LuaState state = LuaState.Get(L);
-			state.BeginPreModule("GlobalUI");
-			GlobalUI_UIAutoLayoutMenuWrap.Register(state);
-			int reference = state.GetMetaReference(typeof(GlobalUI.UIAutoLayoutMenu));
 			state.EndPreModule(L, reference);
 			return 1;
 		}
@@ -1326,6 +1330,24 @@ public static class LuaBinder
 			state.BeginPreModule("GlobalUI");
 			GlobalUI_UIPageWrap.Register(state);
 			int reference = state.GetMetaReference(typeof(GlobalUI.UIPage));
+			state.EndPreModule(L, reference);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int LuaOpen_GameUIMgr_StandardUIMaker(IntPtr L)
+	{
+		try
+		{
+			LuaState state = LuaState.Get(L);
+			state.BeginPreModule("GameUIMgr");
+			GameUIMgr_StandardUIMakerWrap.Register(state);
+			int reference = state.GetMetaReference(typeof(GameUIMgr.StandardUIMaker));
 			state.EndPreModule(L, reference);
 			return 1;
 		}

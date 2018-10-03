@@ -21,9 +21,9 @@ namespace GlobalUI.UIElements
             if (onClick != null) onClick.Invoke();
         }
 
-        public override void Oninit()
+        public override void OnInit()
         {
-            base.Oninit();
+            base.OnInit();
             text = transform.GetChild(0).gameObject.GetComponent<Text>();
         }
         public override void StartSet(string initstr)

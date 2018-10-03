@@ -2,15 +2,18 @@
 
 namespace GlobalUI.UIElements
 {
+    /// <summary>
+    /// UI 按钮2
+    /// </summary>
     public class UIMulitButton : UIButton
     {
         private void Start()
         {
         
         }
-        public override void Oninit()
+        public override void OnInit()
         {
-            base.Oninit();
+            base.OnInit();
             text2 = transform.GetChild(1).gameObject.GetComponent<Text>();
         }
         Text text2;

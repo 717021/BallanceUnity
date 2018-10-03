@@ -2,11 +2,14 @@
 
 namespace GlobalUI.UIElements
 {
+    /// <summary>
+    /// UI 文字
+    /// </summary>
     public class UIText : UIElement
     {
-        public override void Oninit()
+        public override void OnInit()
         {
-            base.Oninit();
+            base.OnInit();
             text = GetComponent<Text>();
         }
 

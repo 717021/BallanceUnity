@@ -7,9 +7,8 @@ public class UnityEngine_MaterialWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(UnityEngine.Material), typeof(UnityEngine.Object));
-		L.RegFunction("Lerp", Lerp);
-		L.RegFunction("SetPass", SetPass);
-		L.RegFunction("CopyPropertiesFromMaterial", CopyPropertiesFromMaterial);
+		L.RegFunction("GetTexturePropertyNames", GetTexturePropertyNames);
+		L.RegFunction("GetTexturePropertyNameIDs", GetTexturePropertyNameIDs);
 		L.RegFunction("HasProperty", HasProperty);
 		L.RegFunction("EnableKeyword", EnableKeyword);
 		L.RegFunction("DisableKeyword", DisableKeyword);
@@ -20,6 +19,9 @@ public class UnityEngine_MaterialWrap
 		L.RegFunction("FindPass", FindPass);
 		L.RegFunction("SetOverrideTag", SetOverrideTag);
 		L.RegFunction("GetTag", GetTag);
+		L.RegFunction("Lerp", Lerp);
+		L.RegFunction("SetPass", SetPass);
+		L.RegFunction("CopyPropertiesFromMaterial", CopyPropertiesFromMaterial);
 		L.RegFunction("SetFloat", SetFloat);
 		L.RegFunction("SetInt", SetInt);
 		L.RegFunction("SetColor", SetColor);
@@ -48,7 +50,6 @@ public class UnityEngine_MaterialWrap
 		L.RegFunction("New", _CreateUnityEngine_Material);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
-		L.RegVar("shaderKeywords", get_shaderKeywords, set_shaderKeywords);
 		L.RegVar("shader", get_shader, set_shader);
 		L.RegVar("color", get_color, set_color);
 		L.RegVar("mainTexture", get_mainTexture, set_mainTexture);
@@ -59,6 +60,7 @@ public class UnityEngine_MaterialWrap
 		L.RegVar("doubleSidedGI", get_doubleSidedGI, set_doubleSidedGI);
 		L.RegVar("enableInstancing", get_enableInstancing, set_enableInstancing);
 		L.RegVar("passCount", get_passCount, null);
+		L.RegVar("shaderKeywords", get_shaderKeywords, set_shaderKeywords);
 		L.EndClass();
 	}
 
@@ -95,17 +97,30 @@ public class UnityEngine_MaterialWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Lerp(IntPtr L)
+	static int GetTexturePropertyNames(IntPtr L)
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 4);
-			UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
-			UnityEngine.Material arg0 = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 2);
-			UnityEngine.Material arg1 = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 3);
-			float arg2 = (float)LuaDLL.luaL_checknumber(L, 4);
-			obj.Lerp(arg0, arg1, arg2);
-			return 0;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1)
+			{
+				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+				string[] o = obj.GetTexturePropertyNames();
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else if (count == 2)
+			{
+				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+				System.Collections.Generic.List<string> arg0 = (System.Collections.Generic.List<string>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<string>));
+				obj.GetTexturePropertyNames(arg0);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Material.GetTexturePropertyNames");
+			}
 		}
 		catch (Exception e)
 		{
@@ -114,33 +129,30 @@ public class UnityEngine_MaterialWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int SetPass(IntPtr L)
+	static int GetTexturePropertyNameIDs(IntPtr L)
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 2);
-			UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
-			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-			bool o = obj.SetPass(arg0);
-			LuaDLL.lua_pushboolean(L, o);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
+			int count = LuaDLL.lua_gettop(L);
 
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int CopyPropertiesFromMaterial(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 2);
-			UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
-			UnityEngine.Material arg0 = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 2);
-			obj.CopyPropertiesFromMaterial(arg0);
-			return 0;
+			if (count == 1)
+			{
+				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+				int[] o = obj.GetTexturePropertyNameIDs();
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else if (count == 2)
+			{
+				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+				System.Collections.Generic.List<int> arg0 = (System.Collections.Generic.List<int>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<int>));
+				obj.GetTexturePropertyNameIDs(arg0);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Material.GetTexturePropertyNameIDs");
+			}
 		}
 		catch (Exception e)
 		{
@@ -354,6 +366,60 @@ public class UnityEngine_MaterialWrap
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Material.GetTag");
 			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int Lerp(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 4);
+			UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+			UnityEngine.Material arg0 = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 2);
+			UnityEngine.Material arg1 = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 3);
+			float arg2 = (float)LuaDLL.luaL_checknumber(L, 4);
+			obj.Lerp(arg0, arg1, arg2);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetPass(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			bool o = obj.SetPass(arg0);
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int CopyPropertiesFromMaterial(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+			UnityEngine.Material arg0 = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 2);
+			obj.CopyPropertiesFromMaterial(arg0);
+			return 0;
 		}
 		catch (Exception e)
 		{
@@ -1358,25 +1424,6 @@ public class UnityEngine_MaterialWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_shaderKeywords(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			UnityEngine.Material obj = (UnityEngine.Material)o;
-			string[] ret = obj.shaderKeywords;
-			ToLua.Push(L, ret);
-			return 1;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index shaderKeywords on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_shader(IntPtr L)
 	{
 		object o = null;
@@ -1567,7 +1614,7 @@ public class UnityEngine_MaterialWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_shaderKeywords(IntPtr L)
+	static int get_shaderKeywords(IntPtr L)
 	{
 		object o = null;
 
@@ -1575,9 +1622,9 @@ public class UnityEngine_MaterialWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			UnityEngine.Material obj = (UnityEngine.Material)o;
-			string[] arg0 = ToLua.CheckStringArray(L, 2);
-			obj.shaderKeywords = arg0;
-			return 0;
+			string[] ret = obj.shaderKeywords;
+			ToLua.Push(L, ret);
+			return 1;
 		}
 		catch(Exception e)
 		{
@@ -1753,6 +1800,25 @@ public class UnityEngine_MaterialWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index enableInstancing on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_shaderKeywords(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Material obj = (UnityEngine.Material)o;
+			string[] arg0 = ToLua.CheckStringArray(L, 2);
+			obj.shaderKeywords = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index shaderKeywords on a nil value");
 		}
 	}
 }

@@ -33,12 +33,7 @@ class LuaEngine : LuaClient,IGameBasePart
 
     private void Start()
     {
-        if (globalLuaState == null)
-        {
-            globalLuaState = GetMainState();
-        }
 
-        GameMgr.Log("LuaEngine start");
         GameCommandManager.RegisterCommand("runlua", RunLuaCommandReceiverHandler, "运行一段lua代码", "runlua string:scipt|runlua string:scipt string:chunkname", 1);
         GameCommandManager.RegisterCommand("runluaf", RunLuaFCommandReceiverHandler, "运行一个lua脚本文件", "runluaf string:sciptfilepath|runluaf string:sciptfilepath string:searchpath", 1);
     }
@@ -104,7 +99,17 @@ class LuaEngine : LuaClient,IGameBasePart
         return false;
     }
 
+    public void InitThis()
+    {
+        if (globalLuaState == null)
+        {
+            globalLuaState = new LuaState();
+            LuaBinder.Bind(globalLuaState);
+            globalLuaState.Start();
+        }
 
+        GameMgr.Log("LuaEngine start");
+    }
     public void ExitGameClear()
     {
         if (globalLuaState != null)

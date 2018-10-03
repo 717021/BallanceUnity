@@ -54,22 +54,31 @@ public class AssetBundleMaker
         switch (option)
         {
             case 0:
-                path = EditorUtility.SaveFilePanel("Save Resource", @"F:\Game\Ballance2\Debug\Temp", "New Resource", "unity3d");
+                path = EditorUtility.SaveFilePanel("Save Resource", 
+                    EditorPrefs.GetString("AssetBundleMakerDefSaveDir", Helper.GamePathManager.DEBUG_PATH), 
+                    EditorPrefs.GetString("AssetBundleMakerDefFileName", "New Resource"), "unity3d");
                 break;
             case 1:
-                path = EditorUtility.SaveFilePanel("Save Resource", @"F:\Game\Ballance2\Debug\Temp", "New Resource", "assetbundle");
+                path = EditorUtility.SaveFilePanel("Save Resource", 
+                    EditorPrefs.GetString("AssetBundleMakerDefSaveDir", Helper.GamePathManager.DEBUG_PATH),
+                    EditorPrefs.GetString("AssetBundleMakerDefFileName", "New Resource"), "assetbundle");
                 break;
             case 2:
                 return;
         }
         if (path.Length != 0)
         {
+            if (path != Helper.GamePathManager.DEBUG_PATH)
+                EditorPrefs.SetString("AssetBundleMakerDefSaveDir", Helper.GamePathManager.DEBUG_PATH);
+            EditorPrefs.SetString("AssetBundleMakerDefFileName", Path.GetFileNameWithoutExtension(path));
+
             Object[] selection2 = Selection.GetFiltered(typeof(Object), SelectionMode.DeepAssets);
             Object[] selection = new Object[selection2.Length + 1];
             for (int i = 0; i < selection2.Length; i++)
                 selection[i] = selection2[i];
             selection[selection2.Length] = AssetDatabase.LoadAssetAtPath("Assets/Version.txt", typeof(Object));
-            BuildPipeline.BuildAssetBundle(Selection.activeObject, selection, path, BuildAssetBundleOptions.CollectDependencies, type);
+
+            BuildPipeline.BuildAssetBundle(selection[0], selection, path, BuildAssetBundleOptions.CollectDependencies, type);
         }
     }
 }

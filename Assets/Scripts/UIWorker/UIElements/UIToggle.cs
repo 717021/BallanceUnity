@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 namespace GlobalUI.UIElements
 {
+    /// <summary>
+    /// UI 开关
+    /// </summary>
     public class UIToggle : UIElement
     {
         /// <summary>
@@ -13,6 +16,9 @@ namespace GlobalUI.UIElements
         /// </summary>
         public delegate void VoidDelegate(bool b);
 
+        /// <summary>
+        /// 开关状态改变时发生
+        /// </summary>
         public event VoidDelegate onCheckChanged;
 
         public void OnClick()
@@ -38,13 +44,17 @@ namespace GlobalUI.UIElements
         Button buttonChecked, buttonUnCheck;
         Text text;
 
-        public override void Oninit()
+        public override void OnInit()
         {
-            base.Oninit();
+            base.OnInit();
             text = transform.GetChild(0).gameObject.GetComponent<Text>();
             buttonChecked = transform.GetChild(2).gameObject.GetComponent<Button>();
             buttonUnCheck = transform.GetChild(1).gameObject.GetComponent<Button>();
         }
+
+        /// <summary>
+        /// 获取开关是否打开
+        /// </summary>
         public bool isChecked
         {
             get { return buttonChecked.gameObject.activeSelf; }

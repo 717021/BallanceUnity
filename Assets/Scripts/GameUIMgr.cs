@@ -1,4 +1,5 @@
 ﻿using GlobalUI;
+using GlobalUI.LayoutUI;
 using Helper;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,6 +7,9 @@ using UnityEngine;
 
 /*
  * 游戏 通用界面 管理器
+ * 
+ * 
+ * 
  */
 
 /// <summary>
@@ -327,7 +331,7 @@ public class GameUIMgr : MonoBehaviour, IGameBasePart
                         t.offsetMax = Vector2.zero;
                         t.offsetMin = Vector2.zero;
                         t.sizeDelta = new Vector2(350, t.sizeDelta.y);
-                        pg.Oninit();
+                        pg.OnInit();
                         if (pg.gameObject.activeSelf)
                             pg.gameObject.SetActive(false);
                         pg.Address = address;
@@ -336,7 +340,7 @@ public class GameUIMgr : MonoBehaviour, IGameBasePart
                     }
                     else
                     {
-                        pg.Oninit();
+                        pg.OnInit();
                         if (pg.gameObject.activeSelf)
                             pg.gameObject.SetActive(false);
                         g.Pages.Add(pg);
@@ -370,7 +374,7 @@ public class GameUIMgr : MonoBehaviour, IGameBasePart
                         t.offsetMin = Vector2.zero;
                         t.sizeDelta = new Vector2(350, t.sizeDelta.y);
                         UIMenu p = pg.GetComponent<UIMenu>();
-                        p.Oninit();
+                        p.OnInit();
                         if (pg.activeSelf)
                             pg.SetActive(false);
                         p.Address = address;
@@ -546,7 +550,7 @@ public class GameUIMgr : MonoBehaviour, IGameBasePart
                         Destroy(btn);
                         return null;
                     }
-                    btn.Oninit();
+                    btn.OnInit();
                     if (initstr != "") btn.StartSet(initstr);
                     btn.Name = name;
                     btn.SpaceStart = sp;

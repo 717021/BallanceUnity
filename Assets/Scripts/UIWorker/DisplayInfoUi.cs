@@ -69,7 +69,7 @@ public class DisplayInfoUi : MonoBehaviour
     private void GetDeviceInfos()
     {
         textDisplayStatic.text =
-             "<color=#cccccc>Ballance : </color><color=#66aaff>" + GameStaticValues.GameVersion + "</color> BulidVer :  " + GameStaticValues.GameBulidVersion +
+             "<color=#cccccc>Ballance : </color><color=#66aaff>" + GameConst.GameVersion + "</color> BulidVer :  " + GameConst.GameBulidVersion +
              "\n<color=#cccccc>Unity : </color><color=#66aaff>" + Application.unityVersion + "</color> " + SystemInfo.deviceModel +
             "\n<color=#cccccc>Device : </color><color=#66aaff>" + SystemInfo.deviceName + "</color> " + Application.platform +
             "\n<color=#cccccc>Mem size : </color>" + SystemInfo.systemMemorySize + " MB" +

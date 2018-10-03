@@ -2,12 +2,15 @@
 
 namespace GlobalUI.UIElements
 {
+    /// <summary>
+    /// UI 滑动条
+    /// </summary>
     public class UISlider : UIElement
     {
 
-        public override void Oninit()
+        public override void OnInit()
         {
-            base.Oninit();
+            base.OnInit();
             text = transform.GetChild(1).gameObject.GetComponent<Text>();
             slider = transform.GetChild(0).gameObject.GetComponent<Slider>();
         }
