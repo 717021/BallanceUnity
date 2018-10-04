@@ -31,11 +31,11 @@ public class DelegateFactory
 		dict.Add(typeof(UnityEngine.AudioClip.PCMReaderCallback), factory.UnityEngine_AudioClip_PCMReaderCallback);
 		dict.Add(typeof(UnityEngine.AudioClip.PCMSetPositionCallback), factory.UnityEngine_AudioClip_PCMSetPositionCallback);
 		dict.Add(typeof(System.Action<UnityEngine.AsyncOperation>), factory.System_Action_UnityEngine_AsyncOperation);
-		dict.Add(typeof(GameCommandManager.CommandReceiverHandler), factory.GameCommandManager_CommandReceiverHandler);
-		dict.Add(typeof(Helper.KeyListener.VoidDelegate), factory.Helper_KeyListener_VoidDelegate);
-		dict.Add(typeof(GlobalUI.UIElements.UIButton.VoidDelegate), factory.GlobalUI_UIElements_UIButton_VoidDelegate);
-		dict.Add(typeof(GlobalUI.UIElements.UIToggle.VoidDelegate), factory.GlobalUI_UIElements_UIToggle_VoidDelegate);
-		dict.Add(typeof(Helper.EventTriggerListener.VoidDelegate), factory.Helper_EventTriggerListener_VoidDelegate);
+		dict.Add(typeof(Ballance2.GameCommandManager.CommandReceiverHandler), factory.Ballance2_GameCommandManager_CommandReceiverHandler);
+		dict.Add(typeof(Ballance2.Utils.KeyListener.VoidDelegate), factory.Ballance2_Utils_KeyListener_VoidDelegate);
+		dict.Add(typeof(Ballance2.UI.UIElements.UIButton.VoidDelegate), factory.Ballance2_UI_UIElements_UIButton_VoidDelegate);
+		dict.Add(typeof(Ballance2.UI.UIElements.UIToggle.VoidDelegate), factory.Ballance2_UI_UIElements_UIToggle_VoidDelegate);
+		dict.Add(typeof(Ballance2.UI.Utils.EventTriggerListener.VoidDelegate), factory.Ballance2_UI_Utils_EventTriggerListener_VoidDelegate);
 
 		DelegateTraits<System.Action>.Init(factory.System_Action);
 		DelegateTraits<UnityEngine.Events.UnityAction>.Init(factory.UnityEngine_Events_UnityAction);
@@ -51,11 +51,11 @@ public class DelegateFactory
 		DelegateTraits<UnityEngine.AudioClip.PCMReaderCallback>.Init(factory.UnityEngine_AudioClip_PCMReaderCallback);
 		DelegateTraits<UnityEngine.AudioClip.PCMSetPositionCallback>.Init(factory.UnityEngine_AudioClip_PCMSetPositionCallback);
 		DelegateTraits<System.Action<UnityEngine.AsyncOperation>>.Init(factory.System_Action_UnityEngine_AsyncOperation);
-		DelegateTraits<GameCommandManager.CommandReceiverHandler>.Init(factory.GameCommandManager_CommandReceiverHandler);
-		DelegateTraits<Helper.KeyListener.VoidDelegate>.Init(factory.Helper_KeyListener_VoidDelegate);
-		DelegateTraits<GlobalUI.UIElements.UIButton.VoidDelegate>.Init(factory.GlobalUI_UIElements_UIButton_VoidDelegate);
-		DelegateTraits<GlobalUI.UIElements.UIToggle.VoidDelegate>.Init(factory.GlobalUI_UIElements_UIToggle_VoidDelegate);
-		DelegateTraits<Helper.EventTriggerListener.VoidDelegate>.Init(factory.Helper_EventTriggerListener_VoidDelegate);
+		DelegateTraits<Ballance2.GameCommandManager.CommandReceiverHandler>.Init(factory.Ballance2_GameCommandManager_CommandReceiverHandler);
+		DelegateTraits<Ballance2.Utils.KeyListener.VoidDelegate>.Init(factory.Ballance2_Utils_KeyListener_VoidDelegate);
+		DelegateTraits<Ballance2.UI.UIElements.UIButton.VoidDelegate>.Init(factory.Ballance2_UI_UIElements_UIButton_VoidDelegate);
+		DelegateTraits<Ballance2.UI.UIElements.UIToggle.VoidDelegate>.Init(factory.Ballance2_UI_UIElements_UIToggle_VoidDelegate);
+		DelegateTraits<Ballance2.UI.Utils.EventTriggerListener.VoidDelegate>.Init(factory.Ballance2_UI_Utils_EventTriggerListener_VoidDelegate);
 
 		TypeTraits<System.Action>.Init(factory.Check_System_Action);
 		TypeTraits<UnityEngine.Events.UnityAction>.Init(factory.Check_UnityEngine_Events_UnityAction);
@@ -71,11 +71,11 @@ public class DelegateFactory
 		TypeTraits<UnityEngine.AudioClip.PCMReaderCallback>.Init(factory.Check_UnityEngine_AudioClip_PCMReaderCallback);
 		TypeTraits<UnityEngine.AudioClip.PCMSetPositionCallback>.Init(factory.Check_UnityEngine_AudioClip_PCMSetPositionCallback);
 		TypeTraits<System.Action<UnityEngine.AsyncOperation>>.Init(factory.Check_System_Action_UnityEngine_AsyncOperation);
-		TypeTraits<GameCommandManager.CommandReceiverHandler>.Init(factory.Check_GameCommandManager_CommandReceiverHandler);
-		TypeTraits<Helper.KeyListener.VoidDelegate>.Init(factory.Check_Helper_KeyListener_VoidDelegate);
-		TypeTraits<GlobalUI.UIElements.UIButton.VoidDelegate>.Init(factory.Check_GlobalUI_UIElements_UIButton_VoidDelegate);
-		TypeTraits<GlobalUI.UIElements.UIToggle.VoidDelegate>.Init(factory.Check_GlobalUI_UIElements_UIToggle_VoidDelegate);
-		TypeTraits<Helper.EventTriggerListener.VoidDelegate>.Init(factory.Check_Helper_EventTriggerListener_VoidDelegate);
+		TypeTraits<Ballance2.GameCommandManager.CommandReceiverHandler>.Init(factory.Check_Ballance2_GameCommandManager_CommandReceiverHandler);
+		TypeTraits<Ballance2.Utils.KeyListener.VoidDelegate>.Init(factory.Check_Ballance2_Utils_KeyListener_VoidDelegate);
+		TypeTraits<Ballance2.UI.UIElements.UIButton.VoidDelegate>.Init(factory.Check_Ballance2_UI_UIElements_UIButton_VoidDelegate);
+		TypeTraits<Ballance2.UI.UIElements.UIToggle.VoidDelegate>.Init(factory.Check_Ballance2_UI_UIElements_UIToggle_VoidDelegate);
+		TypeTraits<Ballance2.UI.Utils.EventTriggerListener.VoidDelegate>.Init(factory.Check_Ballance2_UI_Utils_EventTriggerListener_VoidDelegate);
 
 		StackTraits<System.Action>.Push = factory.Push_System_Action;
 		StackTraits<UnityEngine.Events.UnityAction>.Push = factory.Push_UnityEngine_Events_UnityAction;
@@ -91,11 +91,11 @@ public class DelegateFactory
 		StackTraits<UnityEngine.AudioClip.PCMReaderCallback>.Push = factory.Push_UnityEngine_AudioClip_PCMReaderCallback;
 		StackTraits<UnityEngine.AudioClip.PCMSetPositionCallback>.Push = factory.Push_UnityEngine_AudioClip_PCMSetPositionCallback;
 		StackTraits<System.Action<UnityEngine.AsyncOperation>>.Push = factory.Push_System_Action_UnityEngine_AsyncOperation;
-		StackTraits<GameCommandManager.CommandReceiverHandler>.Push = factory.Push_GameCommandManager_CommandReceiverHandler;
-		StackTraits<Helper.KeyListener.VoidDelegate>.Push = factory.Push_Helper_KeyListener_VoidDelegate;
-		StackTraits<GlobalUI.UIElements.UIButton.VoidDelegate>.Push = factory.Push_GlobalUI_UIElements_UIButton_VoidDelegate;
-		StackTraits<GlobalUI.UIElements.UIToggle.VoidDelegate>.Push = factory.Push_GlobalUI_UIElements_UIToggle_VoidDelegate;
-		StackTraits<Helper.EventTriggerListener.VoidDelegate>.Push = factory.Push_Helper_EventTriggerListener_VoidDelegate;
+		StackTraits<Ballance2.GameCommandManager.CommandReceiverHandler>.Push = factory.Push_Ballance2_GameCommandManager_CommandReceiverHandler;
+		StackTraits<Ballance2.Utils.KeyListener.VoidDelegate>.Push = factory.Push_Ballance2_Utils_KeyListener_VoidDelegate;
+		StackTraits<Ballance2.UI.UIElements.UIButton.VoidDelegate>.Push = factory.Push_Ballance2_UI_UIElements_UIButton_VoidDelegate;
+		StackTraits<Ballance2.UI.UIElements.UIToggle.VoidDelegate>.Push = factory.Push_Ballance2_UI_UIElements_UIToggle_VoidDelegate;
+		StackTraits<Ballance2.UI.Utils.EventTriggerListener.VoidDelegate>.Push = factory.Push_Ballance2_UI_Utils_EventTriggerListener_VoidDelegate;
 	}
     
     public static Delegate CreateDelegate(Type t, LuaFunction func = null)
@@ -1017,10 +1017,10 @@ public class DelegateFactory
 		ToLua.Push(L, o);
 	}
 
-	class GameCommandManager_CommandReceiverHandler_Event : LuaDelegate
+	class Ballance2_GameCommandManager_CommandReceiverHandler_Event : LuaDelegate
 	{
-		public GameCommandManager_CommandReceiverHandler_Event(LuaFunction func) : base(func) { }
-		public GameCommandManager_CommandReceiverHandler_Event(LuaFunction func, LuaTable self) : base(func, self) { }
+		public Ballance2_GameCommandManager_CommandReceiverHandler_Event(LuaFunction func) : base(func) { }
+		public Ballance2_GameCommandManager_CommandReceiverHandler_Event(LuaFunction func, LuaTable self) : base(func, self) { }
 
 		public bool Call(string[] param0)
 		{
@@ -1044,44 +1044,44 @@ public class DelegateFactory
 		}
 	}
 
-	public GameCommandManager.CommandReceiverHandler GameCommandManager_CommandReceiverHandler(LuaFunction func, LuaTable self, bool flag)
+	public Ballance2.GameCommandManager.CommandReceiverHandler Ballance2_GameCommandManager_CommandReceiverHandler(LuaFunction func, LuaTable self, bool flag)
 	{
 		if (func == null)
 		{
-			GameCommandManager.CommandReceiverHandler fn = delegate(string[] param0) { return false; };
+			Ballance2.GameCommandManager.CommandReceiverHandler fn = delegate(string[] param0) { return false; };
 			return fn;
 		}
 
 		if(!flag)
 		{
-			GameCommandManager_CommandReceiverHandler_Event target = new GameCommandManager_CommandReceiverHandler_Event(func);
-			GameCommandManager.CommandReceiverHandler d = target.Call;
+			Ballance2_GameCommandManager_CommandReceiverHandler_Event target = new Ballance2_GameCommandManager_CommandReceiverHandler_Event(func);
+			Ballance2.GameCommandManager.CommandReceiverHandler d = target.Call;
 			target.method = d.Method;
 			return d;
 		}
 		else
 		{
-			GameCommandManager_CommandReceiverHandler_Event target = new GameCommandManager_CommandReceiverHandler_Event(func, self);
-			GameCommandManager.CommandReceiverHandler d = target.CallWithSelf;
+			Ballance2_GameCommandManager_CommandReceiverHandler_Event target = new Ballance2_GameCommandManager_CommandReceiverHandler_Event(func, self);
+			Ballance2.GameCommandManager.CommandReceiverHandler d = target.CallWithSelf;
 			target.method = d.Method;
 			return d;
 		}
 	}
 
-	bool Check_GameCommandManager_CommandReceiverHandler(IntPtr L, int pos)
+	bool Check_Ballance2_GameCommandManager_CommandReceiverHandler(IntPtr L, int pos)
 	{
-		return TypeChecker.CheckDelegateType(typeof(GameCommandManager.CommandReceiverHandler), L, pos);
+		return TypeChecker.CheckDelegateType(typeof(Ballance2.GameCommandManager.CommandReceiverHandler), L, pos);
 	}
 
-	void Push_GameCommandManager_CommandReceiverHandler(IntPtr L, GameCommandManager.CommandReceiverHandler o)
+	void Push_Ballance2_GameCommandManager_CommandReceiverHandler(IntPtr L, Ballance2.GameCommandManager.CommandReceiverHandler o)
 	{
 		ToLua.Push(L, o);
 	}
 
-	class Helper_KeyListener_VoidDelegate_Event : LuaDelegate
+	class Ballance2_Utils_KeyListener_VoidDelegate_Event : LuaDelegate
 	{
-		public Helper_KeyListener_VoidDelegate_Event(LuaFunction func) : base(func) { }
-		public Helper_KeyListener_VoidDelegate_Event(LuaFunction func, LuaTable self) : base(func, self) { }
+		public Ballance2_Utils_KeyListener_VoidDelegate_Event(LuaFunction func) : base(func) { }
+		public Ballance2_Utils_KeyListener_VoidDelegate_Event(LuaFunction func, LuaTable self) : base(func, self) { }
 
 		public void Call(bool param0)
 		{
@@ -1101,44 +1101,44 @@ public class DelegateFactory
 		}
 	}
 
-	public Helper.KeyListener.VoidDelegate Helper_KeyListener_VoidDelegate(LuaFunction func, LuaTable self, bool flag)
+	public Ballance2.Utils.KeyListener.VoidDelegate Ballance2_Utils_KeyListener_VoidDelegate(LuaFunction func, LuaTable self, bool flag)
 	{
 		if (func == null)
 		{
-			Helper.KeyListener.VoidDelegate fn = delegate(bool param0) { };
+			Ballance2.Utils.KeyListener.VoidDelegate fn = delegate(bool param0) { };
 			return fn;
 		}
 
 		if(!flag)
 		{
-			Helper_KeyListener_VoidDelegate_Event target = new Helper_KeyListener_VoidDelegate_Event(func);
-			Helper.KeyListener.VoidDelegate d = target.Call;
+			Ballance2_Utils_KeyListener_VoidDelegate_Event target = new Ballance2_Utils_KeyListener_VoidDelegate_Event(func);
+			Ballance2.Utils.KeyListener.VoidDelegate d = target.Call;
 			target.method = d.Method;
 			return d;
 		}
 		else
 		{
-			Helper_KeyListener_VoidDelegate_Event target = new Helper_KeyListener_VoidDelegate_Event(func, self);
-			Helper.KeyListener.VoidDelegate d = target.CallWithSelf;
+			Ballance2_Utils_KeyListener_VoidDelegate_Event target = new Ballance2_Utils_KeyListener_VoidDelegate_Event(func, self);
+			Ballance2.Utils.KeyListener.VoidDelegate d = target.CallWithSelf;
 			target.method = d.Method;
 			return d;
 		}
 	}
 
-	bool Check_Helper_KeyListener_VoidDelegate(IntPtr L, int pos)
+	bool Check_Ballance2_Utils_KeyListener_VoidDelegate(IntPtr L, int pos)
 	{
-		return TypeChecker.CheckDelegateType(typeof(Helper.KeyListener.VoidDelegate), L, pos);
+		return TypeChecker.CheckDelegateType(typeof(Ballance2.Utils.KeyListener.VoidDelegate), L, pos);
 	}
 
-	void Push_Helper_KeyListener_VoidDelegate(IntPtr L, Helper.KeyListener.VoidDelegate o)
+	void Push_Ballance2_Utils_KeyListener_VoidDelegate(IntPtr L, Ballance2.Utils.KeyListener.VoidDelegate o)
 	{
 		ToLua.Push(L, o);
 	}
 
-	class GlobalUI_UIElements_UIButton_VoidDelegate_Event : LuaDelegate
+	class Ballance2_UI_UIElements_UIButton_VoidDelegate_Event : LuaDelegate
 	{
-		public GlobalUI_UIElements_UIButton_VoidDelegate_Event(LuaFunction func) : base(func) { }
-		public GlobalUI_UIElements_UIButton_VoidDelegate_Event(LuaFunction func, LuaTable self) : base(func, self) { }
+		public Ballance2_UI_UIElements_UIButton_VoidDelegate_Event(LuaFunction func) : base(func) { }
+		public Ballance2_UI_UIElements_UIButton_VoidDelegate_Event(LuaFunction func, LuaTable self) : base(func, self) { }
 
 		public void Call()
 		{
@@ -1154,44 +1154,44 @@ public class DelegateFactory
 		}
 	}
 
-	public GlobalUI.UIElements.UIButton.VoidDelegate GlobalUI_UIElements_UIButton_VoidDelegate(LuaFunction func, LuaTable self, bool flag)
+	public Ballance2.UI.UIElements.UIButton.VoidDelegate Ballance2_UI_UIElements_UIButton_VoidDelegate(LuaFunction func, LuaTable self, bool flag)
 	{
 		if (func == null)
 		{
-			GlobalUI.UIElements.UIButton.VoidDelegate fn = delegate() { };
+			Ballance2.UI.UIElements.UIButton.VoidDelegate fn = delegate() { };
 			return fn;
 		}
 
 		if(!flag)
 		{
-			GlobalUI_UIElements_UIButton_VoidDelegate_Event target = new GlobalUI_UIElements_UIButton_VoidDelegate_Event(func);
-			GlobalUI.UIElements.UIButton.VoidDelegate d = target.Call;
+			Ballance2_UI_UIElements_UIButton_VoidDelegate_Event target = new Ballance2_UI_UIElements_UIButton_VoidDelegate_Event(func);
+			Ballance2.UI.UIElements.UIButton.VoidDelegate d = target.Call;
 			target.method = d.Method;
 			return d;
 		}
 		else
 		{
-			GlobalUI_UIElements_UIButton_VoidDelegate_Event target = new GlobalUI_UIElements_UIButton_VoidDelegate_Event(func, self);
-			GlobalUI.UIElements.UIButton.VoidDelegate d = target.CallWithSelf;
+			Ballance2_UI_UIElements_UIButton_VoidDelegate_Event target = new Ballance2_UI_UIElements_UIButton_VoidDelegate_Event(func, self);
+			Ballance2.UI.UIElements.UIButton.VoidDelegate d = target.CallWithSelf;
 			target.method = d.Method;
 			return d;
 		}
 	}
 
-	bool Check_GlobalUI_UIElements_UIButton_VoidDelegate(IntPtr L, int pos)
+	bool Check_Ballance2_UI_UIElements_UIButton_VoidDelegate(IntPtr L, int pos)
 	{
-		return TypeChecker.CheckDelegateType(typeof(GlobalUI.UIElements.UIButton.VoidDelegate), L, pos);
+		return TypeChecker.CheckDelegateType(typeof(Ballance2.UI.UIElements.UIButton.VoidDelegate), L, pos);
 	}
 
-	void Push_GlobalUI_UIElements_UIButton_VoidDelegate(IntPtr L, GlobalUI.UIElements.UIButton.VoidDelegate o)
+	void Push_Ballance2_UI_UIElements_UIButton_VoidDelegate(IntPtr L, Ballance2.UI.UIElements.UIButton.VoidDelegate o)
 	{
 		ToLua.Push(L, o);
 	}
 
-	class GlobalUI_UIElements_UIToggle_VoidDelegate_Event : LuaDelegate
+	class Ballance2_UI_UIElements_UIToggle_VoidDelegate_Event : LuaDelegate
 	{
-		public GlobalUI_UIElements_UIToggle_VoidDelegate_Event(LuaFunction func) : base(func) { }
-		public GlobalUI_UIElements_UIToggle_VoidDelegate_Event(LuaFunction func, LuaTable self) : base(func, self) { }
+		public Ballance2_UI_UIElements_UIToggle_VoidDelegate_Event(LuaFunction func) : base(func) { }
+		public Ballance2_UI_UIElements_UIToggle_VoidDelegate_Event(LuaFunction func, LuaTable self) : base(func, self) { }
 
 		public void Call(bool param0)
 		{
@@ -1211,44 +1211,44 @@ public class DelegateFactory
 		}
 	}
 
-	public GlobalUI.UIElements.UIToggle.VoidDelegate GlobalUI_UIElements_UIToggle_VoidDelegate(LuaFunction func, LuaTable self, bool flag)
+	public Ballance2.UI.UIElements.UIToggle.VoidDelegate Ballance2_UI_UIElements_UIToggle_VoidDelegate(LuaFunction func, LuaTable self, bool flag)
 	{
 		if (func == null)
 		{
-			GlobalUI.UIElements.UIToggle.VoidDelegate fn = delegate(bool param0) { };
+			Ballance2.UI.UIElements.UIToggle.VoidDelegate fn = delegate(bool param0) { };
 			return fn;
 		}
 
 		if(!flag)
 		{
-			GlobalUI_UIElements_UIToggle_VoidDelegate_Event target = new GlobalUI_UIElements_UIToggle_VoidDelegate_Event(func);
-			GlobalUI.UIElements.UIToggle.VoidDelegate d = target.Call;
+			Ballance2_UI_UIElements_UIToggle_VoidDelegate_Event target = new Ballance2_UI_UIElements_UIToggle_VoidDelegate_Event(func);
+			Ballance2.UI.UIElements.UIToggle.VoidDelegate d = target.Call;
 			target.method = d.Method;
 			return d;
 		}
 		else
 		{
-			GlobalUI_UIElements_UIToggle_VoidDelegate_Event target = new GlobalUI_UIElements_UIToggle_VoidDelegate_Event(func, self);
-			GlobalUI.UIElements.UIToggle.VoidDelegate d = target.CallWithSelf;
+			Ballance2_UI_UIElements_UIToggle_VoidDelegate_Event target = new Ballance2_UI_UIElements_UIToggle_VoidDelegate_Event(func, self);
+			Ballance2.UI.UIElements.UIToggle.VoidDelegate d = target.CallWithSelf;
 			target.method = d.Method;
 			return d;
 		}
 	}
 
-	bool Check_GlobalUI_UIElements_UIToggle_VoidDelegate(IntPtr L, int pos)
+	bool Check_Ballance2_UI_UIElements_UIToggle_VoidDelegate(IntPtr L, int pos)
 	{
-		return TypeChecker.CheckDelegateType(typeof(GlobalUI.UIElements.UIToggle.VoidDelegate), L, pos);
+		return TypeChecker.CheckDelegateType(typeof(Ballance2.UI.UIElements.UIToggle.VoidDelegate), L, pos);
 	}
 
-	void Push_GlobalUI_UIElements_UIToggle_VoidDelegate(IntPtr L, GlobalUI.UIElements.UIToggle.VoidDelegate o)
+	void Push_Ballance2_UI_UIElements_UIToggle_VoidDelegate(IntPtr L, Ballance2.UI.UIElements.UIToggle.VoidDelegate o)
 	{
 		ToLua.Push(L, o);
 	}
 
-	class Helper_EventTriggerListener_VoidDelegate_Event : LuaDelegate
+	class Ballance2_UI_Utils_EventTriggerListener_VoidDelegate_Event : LuaDelegate
 	{
-		public Helper_EventTriggerListener_VoidDelegate_Event(LuaFunction func) : base(func) { }
-		public Helper_EventTriggerListener_VoidDelegate_Event(LuaFunction func, LuaTable self) : base(func, self) { }
+		public Ballance2_UI_Utils_EventTriggerListener_VoidDelegate_Event(LuaFunction func) : base(func) { }
+		public Ballance2_UI_Utils_EventTriggerListener_VoidDelegate_Event(LuaFunction func, LuaTable self) : base(func, self) { }
 
 		public void Call(UnityEngine.GameObject param0)
 		{
@@ -1268,36 +1268,36 @@ public class DelegateFactory
 		}
 	}
 
-	public Helper.EventTriggerListener.VoidDelegate Helper_EventTriggerListener_VoidDelegate(LuaFunction func, LuaTable self, bool flag)
+	public Ballance2.UI.Utils.EventTriggerListener.VoidDelegate Ballance2_UI_Utils_EventTriggerListener_VoidDelegate(LuaFunction func, LuaTable self, bool flag)
 	{
 		if (func == null)
 		{
-			Helper.EventTriggerListener.VoidDelegate fn = delegate(UnityEngine.GameObject param0) { };
+			Ballance2.UI.Utils.EventTriggerListener.VoidDelegate fn = delegate(UnityEngine.GameObject param0) { };
 			return fn;
 		}
 
 		if(!flag)
 		{
-			Helper_EventTriggerListener_VoidDelegate_Event target = new Helper_EventTriggerListener_VoidDelegate_Event(func);
-			Helper.EventTriggerListener.VoidDelegate d = target.Call;
+			Ballance2_UI_Utils_EventTriggerListener_VoidDelegate_Event target = new Ballance2_UI_Utils_EventTriggerListener_VoidDelegate_Event(func);
+			Ballance2.UI.Utils.EventTriggerListener.VoidDelegate d = target.Call;
 			target.method = d.Method;
 			return d;
 		}
 		else
 		{
-			Helper_EventTriggerListener_VoidDelegate_Event target = new Helper_EventTriggerListener_VoidDelegate_Event(func, self);
-			Helper.EventTriggerListener.VoidDelegate d = target.CallWithSelf;
+			Ballance2_UI_Utils_EventTriggerListener_VoidDelegate_Event target = new Ballance2_UI_Utils_EventTriggerListener_VoidDelegate_Event(func, self);
+			Ballance2.UI.Utils.EventTriggerListener.VoidDelegate d = target.CallWithSelf;
 			target.method = d.Method;
 			return d;
 		}
 	}
 
-	bool Check_Helper_EventTriggerListener_VoidDelegate(IntPtr L, int pos)
+	bool Check_Ballance2_UI_Utils_EventTriggerListener_VoidDelegate(IntPtr L, int pos)
 	{
-		return TypeChecker.CheckDelegateType(typeof(Helper.EventTriggerListener.VoidDelegate), L, pos);
+		return TypeChecker.CheckDelegateType(typeof(Ballance2.UI.Utils.EventTriggerListener.VoidDelegate), L, pos);
 	}
 
-	void Push_Helper_EventTriggerListener_VoidDelegate(IntPtr L, Helper.EventTriggerListener.VoidDelegate o)
+	void Push_Ballance2_UI_Utils_EventTriggerListener_VoidDelegate(IntPtr L, Ballance2.UI.Utils.EventTriggerListener.VoidDelegate o)
 	{
 		ToLua.Push(L, o);
 	}

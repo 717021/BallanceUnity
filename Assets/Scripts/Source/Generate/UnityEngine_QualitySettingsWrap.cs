@@ -39,7 +39,7 @@ public class UnityEngine_QualitySettingsWrap
 		L.RegVar("blendWeights", get_blendWeights, set_blendWeights);
 		L.RegVar("streamingMipmapsActive", get_streamingMipmapsActive, set_streamingMipmapsActive);
 		L.RegVar("streamingMipmapsMemoryBudget", get_streamingMipmapsMemoryBudget, set_streamingMipmapsMemoryBudget);
-		L.RegVar("streamingMipmapsRenderersPerFrame", get_streamingMipmapsRenderersPerFrame, null);
+		L.RegVar("streamingMipmapsRenderersPerFrame", get_streamingMipmapsRenderersPerFrame, set_streamingMipmapsRenderersPerFrame);
 		L.RegVar("streamingMipmapsMaxLevelReduction", get_streamingMipmapsMaxLevelReduction, set_streamingMipmapsMaxLevelReduction);
 		L.RegVar("streamingMipmapsAddAllCameras", get_streamingMipmapsAddAllCameras, set_streamingMipmapsAddAllCameras);
 		L.RegVar("streamingMipmapsMaxFileIORequests", get_streamingMipmapsMaxFileIORequests, set_streamingMipmapsMaxFileIORequests);
@@ -1060,6 +1060,21 @@ public class UnityEngine_QualitySettingsWrap
 		{
 			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 			UnityEngine.QualitySettings.streamingMipmapsMemoryBudget = arg0;
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_streamingMipmapsRenderersPerFrame(IntPtr L)
+	{
+		try
+		{
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+
 			return 0;
 		}
 		catch (Exception e)

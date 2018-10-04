@@ -1,0 +1,5 @@
+Optional:assets/musics_[Platform].unity3d
+Optional:assets/skys_[Platform].unity3d
+Optional:assets/sounds_[Platform].unity3d
+Required:scenses/menulevel.assetbundle
+

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Ballance2.Utils;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -55,12 +56,12 @@ public class AssetBundleMaker
         {
             case 0:
                 path = EditorUtility.SaveFilePanel("Save Resource", 
-                    EditorPrefs.GetString("AssetBundleMakerDefSaveDir", Helper.GamePathManager.DEBUG_PATH), 
+                    EditorPrefs.GetString("AssetBundleMakerDefSaveDir", GamePathManager.DEBUG_PATH), 
                     EditorPrefs.GetString("AssetBundleMakerDefFileName", "New Resource"), "unity3d");
                 break;
             case 1:
                 path = EditorUtility.SaveFilePanel("Save Resource", 
-                    EditorPrefs.GetString("AssetBundleMakerDefSaveDir", Helper.GamePathManager.DEBUG_PATH),
+                    EditorPrefs.GetString("AssetBundleMakerDefSaveDir", GamePathManager.DEBUG_PATH),
                     EditorPrefs.GetString("AssetBundleMakerDefFileName", "New Resource"), "assetbundle");
                 break;
             case 2:
@@ -68,8 +69,8 @@ public class AssetBundleMaker
         }
         if (path.Length != 0)
         {
-            if (path != Helper.GamePathManager.DEBUG_PATH)
-                EditorPrefs.SetString("AssetBundleMakerDefSaveDir", Helper.GamePathManager.DEBUG_PATH);
+            if (path != GamePathManager.DEBUG_PATH)
+                EditorPrefs.SetString("AssetBundleMakerDefSaveDir", GamePathManager.DEBUG_PATH);
             EditorPrefs.SetString("AssetBundleMakerDefFileName", Path.GetFileNameWithoutExtension(path));
 
             Object[] selection2 = Selection.GetFiltered(typeof(Object), SelectionMode.DeepAssets);

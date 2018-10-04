@@ -3,8 +3,8 @@
 public static class LuaConst
 {
 #if UNITY_EDITOR
-    public static string luaDir = Application.dataPath + "/Scripts/LUA/Lua";                //lua逻辑代码目录
-    public static string toluaDir = Application.dataPath + "/Scripts/LUA/ToLua/Lua";        //tolua lua文件目录
+    public static string luaDir = Application.dataPath + "/Scripts/Core/Lua";                //lua逻辑代码目录
+    public static string toluaDir = Application.dataPath + "/Scripts/3rd/ToLua/Lua";        //tolua lua文件目录
 #else
     public static string luaDir = Application.dataPath + "/Lua";                //lua逻辑代码目录
     public static string toluaDir = Application.dataPath + "/ToLua/Lua";        //tolua lua文件目录

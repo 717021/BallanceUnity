@@ -1,10 +1,20 @@
+GameBulider = Ballance2.GameBulider
+GamePathManager = Ballance2.Utils.GamePathManager
+GameMgr = GameBulider.GetGameService(typeof(Ballance2.GameMgr), GameServices.GameMgr)
+GameModLoader = GameBulider.GetGameService(typeof(Ballance2.GameModLoader), GameServices.GameModLoader)
+GameConst = Ballance2.Utils.GameConst
+
+
+loader_err = ""
+loader_succeed = false
+
+function GameInit_GetLoaderSucceed() return loader_succeed end
+function GameInit_GetLoaderError() return loader_err end
 function GameInit_Entry()
-  loader_err = ""
-  GameMgr.Log("Gameinit test")
-  GameMgr.Log("Game version : {0} Bulid version : ", GameConst.GameVersion, GameConst.GameBulidVersion)
-  GameMgr.Log("Gameinit end")
-  return true
+  return StartCoroutine(GameInit_Coroutine)
 end
-function GameInit_GetLoaderError()
-  return loader_err
+function GameInit_Coroutine()
+  GameMgr.Log("Gameinit script start")
+  GameMgr.Log("Game version : {0} Bulid version : {1}", GameConst.GameVersion, GameConst.GameBulidVersion)
+  GameMgr.Log("Gameinit finished")
 end

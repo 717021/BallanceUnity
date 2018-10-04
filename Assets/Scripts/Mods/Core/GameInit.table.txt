@@ -1,0 +1,4 @@
+RESOURCE:assets/musics_[Platform].unity3d
+RESOURCE:assets/skys_[Platform].unity3d
+RESOURCE:assets/sounds_[Platform].unity3d
+MODPACK:scenses/menulevel.assetbundle
