@@ -105,6 +105,27 @@ namespace Ballance2
         {
             UIFadeHlper.FadeIn();
         }
+        /// <summary>
+        /// 屏幕变黑
+        /// </summary>
+        public void SetFadeBlack()
+        {
+            UIFadeHlper.Alpha = 1;
+        }
+        /// <summary>
+        /// 设置屏幕取消变黑
+        /// </summary>
+        public void SetFadeTransparent()
+        {
+            UIFadeHlper.Alpha = 0;
+        }
+        /// <summary>
+        /// 设置屏幕渐变的颜色
+        /// </summary>
+        public void SetFadeColor(Color c)
+        {
+            UIFadeHlper.BgImage.color = c;
+        }
 
         /// <summary>
         /// 通用UI界面生成器实例

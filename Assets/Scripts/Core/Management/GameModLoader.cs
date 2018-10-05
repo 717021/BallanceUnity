@@ -56,6 +56,16 @@ namespace Ballance2
 
         public static List<GameModPackage> LoadedPackages { get; private set; }
 
+        private string ModResourceIdentifierFix(string identifier)
+        {
+            //特殊处理前缀
+            if (identifier.StartsWith("RESOURCE:"))
+                identifier = identifier.Remove(0, 9);
+            else if (identifier.StartsWith("ZIPPACK:") || identifier.StartsWith("MODPACK:"))
+                GamePathManager.SplitResourceIdentifier(identifier, out identifier);
+            return identifier;
+        }
+
         /// <summary>
         /// 寻找已加载mod包
         /// </summary>
@@ -64,6 +74,8 @@ namespace Ballance2
         /// <returns></returns>
         public bool FindLadedMod(string filePath, out GameModPackage modPackage)
         {
+            filePath = ModResourceIdentifierFix(filePath);
+
             bool rs = false;
             foreach (GameModPackage g in LoadedPackages)
             {
@@ -83,6 +95,8 @@ namespace Ballance2
         /// <returns></returns>
         public GameModPackage FindLadedMod(string filePath)
         {
+            filePath = ModResourceIdentifierFix(filePath);
+
             foreach (GameModPackage g in LoadedPackages)
             {
                 if (g.Name == filePath || g.FilePath == filePath)
@@ -97,6 +111,8 @@ namespace Ballance2
         /// <returns></returns>
         public bool IsModLaded(string filePath)
         {
+            filePath = ModResourceIdentifierFix(filePath);
+
             bool rs = false;
             foreach (GameModPackage g in LoadedPackages)
             {
@@ -112,7 +128,8 @@ namespace Ballance2
         /// 加载 MOD 包
         /// </summary>
         /// <param name="filePath">文件路径</param>
-        /// <param name="iszip">是否为zip，是则assetpath填写主assetbundle在zip文件中路径。</param>
+        /// <param name="type">MOD 包类型</param>
+        /// <param name="init">加载 MOD 包后是否立即初始化，初始化之后才能使用</param>
         /// <param name="assetpath">是zip则assetpath填写主assetbundle在zip文件中路径</param>
         /// <param name="forceReload">是否强制重新加载</param>
         /// <returns></returns>
@@ -133,12 +150,9 @@ namespace Ballance2
                     type = GameModPackage.GameModType.ModPackage;
 
                 string[] ss = GamePathManager.SplitResourceIdentifier(filePath, out filePath);
-                if (ss.Length > 1)
-                {
-                    filePath = ss[0];
-                    assetpath = ss[1];
-                }
-                if (ss.Length > 2) init = StringConverter.StrToBool(ss[2]);
+
+                if (ss.Length > 2) assetpath = ss[2];
+                if (ss.Length > 3) init = StringConverter.StrToBool(ss[3]);
             }
 
             if (!IsModLaded(filePath))
@@ -285,14 +299,25 @@ namespace Ballance2
                 GameBulider.CommandManager.OutPut("已加载的 MOD 包共 " + LoadedPackages.Count + " 个");
                 foreach (GameModPackage g in LoadedPackages)
                 {
-                    s = g.Name;
-                    s += "\n    AssetBundlePath : " + g.AssetBundlePath;
-                    s += "\n    FilePath : " + g.FilePath;
-                    s += "\n    Initnaized : " + g.Initnaized;
-                    s += "\n    DefaultAssetFindType : " + g.DefaultAssetFindType;
-                    s += "\n    IsZip : " + g.IsZip;
+                    switch (g.Status)
+                    {
+                        case GameModPackage.GameModStatus.NotInitnaize:
+                            s = "<color=#888888>" + g.Name + "</color>";
+                            break;
+                        case GameModPackage.GameModStatus.Initnaized:
+                            s = "<color=#ffffff>" + g.Name + "</color>";
+                            break;
+                        case GameModPackage.GameModStatus.InitnaizeFailed:
+                            s = "<color=#FF7256>" + g.Name + "</color> (InitnaizeFailed)";
+                            break;
+                    }
 
-                    GameBulider.CommandManager.OutPutInfo(s);
+                    s += "\n                Type : " + g.Type.ToString();
+                    s += "\n     AssetBundlePath : " + g.AssetBundlePath;
+                    s += "\n            FilePath : " + g.FilePath;
+                    s += "\nDefaultAssetFindType : " + g.DefaultAssetFindType;
+
+                    GameBulider.CommandManager.OutPut(s);
                     if (enumcab) GameBulider.CommandManager.OutPut(g.EnumChildResPacks());
                 }
             }
@@ -336,7 +361,7 @@ namespace Ballance2
             GameModPackage modPackage;
             if (FindLadedMod(path, out modPackage))
             {
-                if (modPackage.IsZip)
+                if (modPackage.Type == GameModPackage.GameModType.ZipPackage)
                 {
                     if (pararms.Length > 2 && StringConverter.StrToBool(pararms[2]))
                     {
@@ -410,5 +435,5 @@ namespace Ballance2
             GameCommandManager.UnRegisterCommand("unloadmodrs", UnLodModRes_CommandReceiverHandler);
         }
     }
-    
+
 }

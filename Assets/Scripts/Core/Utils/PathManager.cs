@@ -104,7 +104,7 @@ namespace Ballance2.Utils
 
                     if (IsAbsolutePath(pathbuf)) return pathbuf;
 #if UNITY_EDITOR
-                    pathbuf = DEBUG_MODS_PATH + "core/" + pathbuf;
+                    pathbuf = DEBUG_PATH + "core/" + pathbuf;
 #elif UNITY_STANDALONE || UNITY_ANDROID
                     pathbuf = Application.dataPath + "/core/" + pathbuf;
 #elif UNITY_IOS

@@ -310,7 +310,7 @@ public class Ballance2_GameModPackageWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			Ballance2.GameModPackage obj = (Ballance2.GameModPackage)o;
-			bool ret = obj.IsZip;
+            bool ret = true;
 			LuaDLL.lua_pushboolean(L, ret);
 			return 1;
 		}

@@ -36,7 +36,7 @@ namespace Ballance2
         public RectTransform textLinesRectTransform;
         public RectTransform textLinesViewRectTransform;
         public LayoutElement textLinesLayoutElement;
-        public GameObject panelCommand, textShowCmd, displayRunInfo;
+        public GameObject panelCommand, textShowCmd, displayRunInfo, hideCmdBtn;
         public Text textLines, textTips;
         public InputField inputCommand;
         public DUIDrag dragCommand;
@@ -74,6 +74,7 @@ namespace Ballance2
                         textShowCmd.SetActive(false);
                         panelCommand.SetActive(true);
                         displayRunInfo.SetActive(false);
+                        hideCmdBtn.SetActive(true);
                         commandShowed2Count = 0;
                         commandDisplays2.Clear();
                         CommandShowEnd();
@@ -87,6 +88,7 @@ namespace Ballance2
                         cmdlinesScrollRect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
                         cmdlinesScrollRect.vertical = false;
                         panelCommand.SetActive(false);
+                        hideCmdBtn.SetActive(false);
                         textShowCmd.SetActive(true);
                         displayRunInfo.SetActive(true);
                         textLines.text = "";
@@ -199,9 +201,9 @@ namespace Ballance2
                 string d = commandDisplays[i];
                 len += d.Length;
                 textLines.text = d + "\n" + textLines.text;
-                if (len > 2048) { len = commandDisplays.Count - 1 - i; break; }
+                if (len > 8192) { len = -(commandDisplays.Count - 1 - i); break; }
             }
-            if (len > 0) commandDisplays.RemoveRange(0, len);
+            if (len < 0) commandDisplays.RemoveRange(0, -len);
         }
         private void DisplayCommandFff()
         {

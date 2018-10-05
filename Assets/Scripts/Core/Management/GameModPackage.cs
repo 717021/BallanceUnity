@@ -94,6 +94,28 @@ namespace Ballance2
             /// </summary>
             ZipPackage,
         }
+        /// <summary>
+        /// 说明 MOD 包的加载状态
+        /// </summary>
+        public enum GameModStatus
+        {
+            /// <summary>
+            /// 未知，不支持
+            /// </summary>
+            Unknow,
+            /// <summary>
+            /// 未加载
+            /// </summary>
+            NotInitnaize,
+            /// <summary>
+            /// 已经加载
+            /// </summary>
+            Initnaized,
+            /// <summary>
+            /// 初始化错误
+            /// </summary>
+            InitnaizeFailed,
+        }
 
         /// <summary>
         /// 释放，请勿调用（IDisposable自动调用）
@@ -131,13 +153,13 @@ namespace Ballance2
         {
             if (zipFileReader != null)
             {
-                IsZip = true;
                 ZipFile = zipFileReader;
                 AssetBundlePath = assetPath;
                 Name = Path.GetFileNameWithoutExtension(zipFileReader.Url);
                 FilePath = zipFileReader.Url;
-                Initnaized = false;
+                Type = GameModType.ZipPackage;
                 DefaultAssetFindType = GameModPackageAssetFindType.UseZip;
+                Status = GameModStatus.NotInitnaize;
             }
             else throw new ArgumentNullException("zipFileReader");
         }
@@ -147,14 +169,11 @@ namespace Ballance2
         /// <param name="assetPath">AssetBundle 路径</param>
         public GameModPackage(string assetPath)
         {
-            IsZip = false;
             AssetBundlePath = assetPath;
-            Name = assetPath;
-
-            FilePath = Path.GetFileNameWithoutExtension(assetPath);
-
-            Initnaized = false;
+            FilePath = assetPath;
+            Name = Path.GetFileNameWithoutExtension(assetPath);
             DefaultAssetFindType = GameModPackageAssetFindType.UseAssetBundle;
+            Status = GameModStatus.NotInitnaize;
         }
         /// <summary>
         /// 使用一个 AssetBundle 初始化此 MOD 包为一个 AssetBundle MOD 包，
@@ -162,8 +181,6 @@ namespace Ballance2
         /// <param name="assetBundle">AssetBundle</param>
         public GameModPackage(AssetBundle assetBundle)
         {
-            IsZip = false;
-            Initnaized = false;
             if (assetBundle != null)
             {
                 FilePath = assetBundle.name;
@@ -171,6 +188,7 @@ namespace Ballance2
                 Name = assetBundle.name;
                 BaseAssetPack = assetBundle;
                 DefaultAssetFindType = GameModPackageAssetFindType.UseAssetBundle;
+                Status = GameModStatus.NotInitnaize;
             }
             else throw new ArgumentNullException("assetBundle");
         }
@@ -188,10 +206,6 @@ namespace Ballance2
         /// </summary>
         public string Name { get; private set; }
         /// <summary>
-        /// 是否已开启zip支持和是否已加载zip包
-        /// </summary>
-        public bool IsZip { get; private set; }
-        /// <summary>
         /// 此 Mod 对应的zip包（<see cref="IsZip"/> 为 true 时有效）
         /// </summary>
         public ZipFileReader ZipFile { get; private set; }
@@ -202,7 +216,11 @@ namespace Ballance2
         public int VisitCount { get; set; }
 
         /// <summary>
-        /// MOD 类型
+        /// 获取 MOD 包当前加载状态
+        /// </summary>
+        public GameModStatus Status { get; private set; }
+        /// <summary>
+        /// 获取 MOD 类型
         /// </summary>
         public GameModType Type { get; internal set; }
         /// <summary>
@@ -227,17 +245,18 @@ namespace Ballance2
         /// </summary>
         public System.Reflection.Assembly NativeMod { get; private set; }
         /// <summary>
-        /// 是否加载完成
-        /// </summary>
-        public bool Initnaized { get; private set; }
-        /// <summary>
-        /// 是否加载错误
-        /// </summary>
-        public bool InitnaizeFailed { get; private set; }
-        /// <summary>
         /// 初始化数据（保存在ModDef.txt中）
         /// </summary>
         public BFSReader InitnaizeDefFile { get { return initBFSReader; } }
+        /// <summary>
+        /// 获取此 MOD 包是否初始化完成
+        /// </summary>
+        public bool Initnaized { get { return Status == GameModStatus.Initnaized; } }
+        /// <summary>
+        /// 获取此 MOD 包是否初始化失败
+        /// </summary>
+        public bool InitnaizeFailed { get { return Status == GameModStatus.InitnaizeFailed; } }
+        
 
         //ab包暂存结构
         private struct AssetBundleMr
@@ -267,14 +286,14 @@ namespace Ballance2
         public IEnumerator Initialize(bool forceReload, bool forceAgrs = false, GameModInitArgs agrs = null)
         {
             //检测是否重新加载
-            if (Initnaized || (InitnaizeFailed && !forceReload)) yield break;
+            if (Initnaized || (Status == GameModStatus.InitnaizeFailed && !forceReload)) yield break;
 
             GameMgr.Log("Initializing package : {0} ...", Name);
 
             //init agrs
             if (forceAgrs && agrs == null)
             {
-                InitnaizeFailed = true;
+                Status = GameModStatus.InitnaizeFailed;
                 GameMgr.LogErr("Package : {0} You have specified forceAgrs, but no parameters were provided.", Name);
                 yield break;
             }
@@ -285,13 +304,13 @@ namespace Ballance2
             {
                 if (string.IsNullOrEmpty(AssetBundlePath))
                 {
-                    InitnaizeFailed = true;
+                    Status = GameModStatus.InitnaizeFailed;
                     GameMgr.LogErr("Package : {0} failed to load AssetBundle because AssetBundlePath is null !", Name);
                     yield break;
                 }
                 else
                 {
-                    if (IsZip)
+                    if (Type == GameModType.ZipPackage)
                     {
                         MemoryStream ms = new MemoryStream();
                         if (ZipFile.GetFile(AssetBundlePath, ms))
@@ -300,14 +319,14 @@ namespace Ballance2
                             if (BaseAssetPack == null)
                             {
                                 GameMgr.LogErr("Package : " + Name + " failed to load AssetBundle in AssetBundle.LoadFromStream() !");
-                                InitnaizeFailed = true;
+                                Status = GameModStatus.InitnaizeFailed;
                                 yield break;
                             }
                         }
                         else
                         {
                             GameMgr.LogErr("Package : " + Name + " failed to load AssetBundle because ZipFile load " + AssetBundlePath + " failed !\nZipFileReader return error : " + ZipFile.LastError);
-                            InitnaizeFailed = true;
+                            Status = GameModStatus.InitnaizeFailed;
                             yield break;
                         }
                     }
@@ -324,25 +343,28 @@ namespace Ballance2
                         else
                         {
                             GameMgr.LogErr("Package : " + Name + " failed to load AssetBundle ! \nError : " + www.error);
-                            InitnaizeFailed = true;
+                            Status = GameModStatus.InitnaizeFailed;
                             yield break;
                         }
                     }
                 }
             }
 
-            //Read init cfg 读取 ModDef.txt
-            if (BaseAssetPack != null)
+            if (Type != GameModType.Resource)
             {
-                TextAsset ta = BaseAssetPack.LoadAsset<TextAsset>("ModDef.txt");
-                if (ta != null) initBFSReader = new BFSReader(ta);
-                else GameMgr.LogWarn("Package : {0} does not contain ModDef.txt .", Name);
-            }
-            else if (IsZip && ZipFile != null)
-            {
-                string s = ZipFile.GetText("ModDef.txt");
-                if (s != null) initBFSReader = new BFSReader(s);
-                else GameMgr.LogWarn("Package : {0} does not contain ModDef.txt .", Name);
+                //Read init cfg 读取 ModDef.txt
+                if (BaseAssetPack != null)
+                {
+                    TextAsset ta = BaseAssetPack.LoadAsset<TextAsset>("ModDef.txt");
+                    if (ta != null) initBFSReader = new BFSReader(ta);
+                    else GameMgr.LogWarn("Package : {0} does not contain ModDef.txt .", Name);
+                }
+                else if (Type == GameModType.ZipPackage && ZipFile != null)
+                {
+                    string s = ZipFile.GetText("ModDef.txt");
+                    if (s != null) initBFSReader = new BFSReader(s);
+                    else GameMgr.LogWarn("Package : {0} does not contain ModDef.txt .", Name);
+                }
             }
 
             //read init agrs
@@ -425,7 +447,7 @@ namespace Ballance2
                 }
             }
 
-            Initnaized = true;
+            Status = GameModStatus.Initnaized;
             GameMgr.Log("Package : {0} initialized.", Name);
             yield break;
         }
@@ -485,7 +507,7 @@ namespace Ballance2
             if (Initnaized)
             {
                 GameMgr.Log("Initializing package : {0} asset : {1}...", Name, assetpath);
-                if (IsZip && ZipFile != null)
+                if (Type == GameModType.ZipPackage && ZipFile != null)
                 {
                     AssetBundle assetBundle = null;
                     if (HasResPack(assetpath, out assetBundle))

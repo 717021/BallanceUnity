@@ -1,7 +1,8 @@
 fileFormatVersion: 2
-guid: da38e9d3dee3186468db2afaee644b56
-TextScriptImporter:
+guid: f7cadb543e8226e49b02658953d144a3
+NativeFormatImporter:
   externalObjects: {}
+  mainObjectFileID: 100100000
   userData: 
   assetBundleName: gameinit
   assetBundleVariant: 

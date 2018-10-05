@@ -71,6 +71,7 @@ namespace Ballance2.UI.Utils
             set
             {
                 mAlpha = value;
+                BgImage.color = new Color(BgImage.color.r, BgImage.color.g, BgImage.color.b, mAlpha);
             }
         }
 

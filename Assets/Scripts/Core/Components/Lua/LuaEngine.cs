@@ -10,6 +10,7 @@ namespace Ballance2
     class LuaEngine : LuaClient, IGameBasePart
     {
         public static LuaState globalLuaState;
+        public static LuaState globalLuaStateNew;
 
         public GameBulider GameBulider
         {
@@ -106,6 +107,12 @@ namespace Ballance2
             if (globalLuaState == null)
             {
                 globalLuaState = GetMainState();
+            }
+            if (globalLuaStateNew == null)
+            {
+                globalLuaStateNew = new LuaState();
+                globalLuaStateNew.Start();
+                LuaBinder.Bind(globalLuaStateNew);
             }
 
             GameMgr.Log("LuaEngine start");

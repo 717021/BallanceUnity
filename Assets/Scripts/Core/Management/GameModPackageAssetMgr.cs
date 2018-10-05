@@ -47,9 +47,17 @@ namespace Ballance2
         /// <param name="perfab"> Perfab 资源</param>
         /// <param name="name">指定新建的 GameObject 的名字</param>
         /// <returns></returns>
-        public static GameObject InitObjWithPerfab(GameObject perfab, string name = "")
+        public static GameObject InitObjWithPerfab(GameObject perfab, string name = "", Transform parent = null)
         {
-            GameObject gameObject = UnityEngine.Object.Instantiate(perfab);
+            if (perfab == null)
+            {
+                GameMgr.LogErr("[InitObjWithPerfab] The Object you want to instantiate is null. {0}", name);
+                return null;
+            }
+
+            GameObject gameObject = null;
+            if (parent != null) gameObject = UnityEngine.Object.Instantiate(perfab, parent);
+            else gameObject = UnityEngine.Object.Instantiate(perfab);
             if (name != "") gameObject.name = name;
             return gameObject;
         }
@@ -144,7 +152,7 @@ namespace Ballance2
                     goto RETURN;
                 }
             }
-            else if (package.IsZip)
+            else if (package.Type == GameModPackage.GameModType.ZipPackage)
             {
                 if (package.ZipFile != null)
                 {

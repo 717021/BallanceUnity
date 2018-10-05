@@ -36,6 +36,7 @@ namespace Ballance2
 
         //==============================
 
+        public RectTransform uiHostRectTransform;
         public GameUIMgr uiMgr;
         public GameObject uiHost;
         private GameObject levelHost;
@@ -55,6 +56,10 @@ namespace Ballance2
         /// 全局 Lua 虚拟机
         /// </summary>
         public LuaState GlobalLuaState { get { return LuaEngine.globalLuaState; } }
+        /// <summary>
+        /// 全局 Lua 虚拟机（无looper）
+        /// </summary>
+        public LuaState GlobalLuaStateForRunner { get { return LuaEngine.globalLuaStateNew; } }
         public GameObject LevelHost { get { return levelHost; } }
 
         //==============================
@@ -132,6 +137,8 @@ namespace Ballance2
             WindowMgr = uiMgr.gameObject.GetComponent<GameWindowMgr>();
             WindowMgr.GameBulider = this;
             WindowMgr.uiHost = uiHost;
+
+            uiMgr.SetFadeBlack();
         }
         private void InitGlobal()
         {
@@ -165,6 +172,7 @@ namespace Ballance2
         //初始化
         private IEnumerator InitGame()
         {
+            GameObject intro = null;
             string errmsg = "";
             //加载Gameinit元件
             string gameinit_path = GamePathManager.GetResRealPath("core", "gameinit.assetbundle");
@@ -176,9 +184,28 @@ namespace Ballance2
             if (!GameModLoader.FindLadedMod(gameinit_path, out gameinitModPackage))
             { GameMgr.LogErr("Init {0} Failed.", gameinit_path); errmsg = "加载主元件 " + gameinit_path + " 失败"; goto ERRANDEXIT; }
 
-            yield return new WaitForSeconds(2f);
+            #region Intro
+
+            //Intro界面
+            bool updateProgress = false;
+            RectTransform IntroProgreesBgRectTransform = null;
+            RectTransform IntroProgreesRectTransform = null;
+            //加载Intro界面
+            intro = GameModPackageAssetMgr.InitObjWithPerfab(GameModPackageAssetMgr.GetPackagePerfab(gameinitModPackage, "GameIntro"), "GameUIIntro", uiHostRectTransform);
+            if (intro != null)
+            {
+                IntroProgreesBgRectTransform = intro.transform.Find("IntroProgreesBg").gameObject.GetComponent<RectTransform>();
+                IntroProgreesRectTransform = intro.transform.Find("IntroProgrees").gameObject.GetComponent<RectTransform>();
+
+                if (IntroProgreesBgRectTransform && IntroProgreesRectTransform)
+                    updateProgress = true;
+            }
+
+            #endregion
 
             //================================================
+
+            #region Load and check
 
             TextAsset table = GameModPackageAssetMgr.GetPackageTextAsset(gameinitModPackage, "GameInit.table");
             TextAsset validTable = GameModPackageAssetMgr.GetPackageTextAsset(gameinitModPackage, "GameValidate.table");
@@ -202,14 +229,22 @@ namespace Ballance2
 
                     yield return StartCoroutine(GameModLoader.LoadMod(pack_path));
 
+                    //检测是否加载
                     if (!GameModLoader.IsModLaded(pack_path))
                     {
                         GameMgr.LogErr("Load package {0} failed!", pack_path);
                         failedCount++;
                     }
+
+                    //更新进度条
+                    if (updateProgress)
+                    {
+                        float x = IntroProgreesBgRectTransform.sizeDelta.x * ((float)i / sp.Count);
+                        IntroProgreesRectTransform.sizeDelta = new Vector2(x, IntroProgreesRectTransform.sizeDelta.y);
+                        IntroProgreesRectTransform.anchoredPosition = new Vector2(-((IntroProgreesBgRectTransform.sizeDelta.x - x) / 2), IntroProgreesRectTransform.anchoredPosition.y);
+                    }
                 }
-                if (failedCount > 0)
-                    GameMgr.LogWarn("Load package failed :{0}/{1}", failedCount, sp.Count);
+                if (failedCount > 0) GameMgr.LogWarn("Load package failed :{0}/{1}", failedCount, sp.Count);
             }
             sp = null;
 
@@ -256,8 +291,18 @@ namespace Ballance2
             }
             sp = null;
 
+            #endregion
+
+            //游戏已经加载完全了，现在将控制权交予 MenuLevel Loader
+            //================================================
+
+            GameModPackage gameinitModPackage = null;
+            if (!GameModLoader.FindLadedMod(gameinit_path, out gameinitModPackage))
+
+
             goto ENDLOAD;
             ERRANDEXIT:
+            if (intro != null) intro.SetActive(false);
             UIManager.ShowDialog(0, "游戏初始化失败", "请尝试重新安装游戏\n错误信息：" + errmsg, "退出游戏", "");
             yield return new WaitUntil(UIManager.IsDialogClosed);
             GameMgr.ExitGame();//加载失败退出
